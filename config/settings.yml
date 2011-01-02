@@ -1,0 +1,16 @@
+defaults: &defaults
+ 
+:development:
+  :couchdb:
+    :url: http://localhost:5984/map_dev
+  <<: *defaults
+  
+:test:
+  :couchdb:
+    :url: http://localhost:5984/map_test
+    <<: *defaults
+
+:production:
+  :couchdb:
+    :url: http://localhost:5984/map_production
+    <<: *defaults
