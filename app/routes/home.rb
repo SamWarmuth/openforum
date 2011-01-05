@@ -84,10 +84,11 @@ class Main
 
     @user.x_location = params[:x].to_i
     @user.y_location = params[:y].to_i
-    @user.save
+    
     Pusher['global'].trigger('locationupdate', {:entityID => @user.id,
                                                 :xLocation => @user.x_location, 
                                                 :yLocation => @user.y_location}.to_json)
+    @user.save
     
     return 200
   end
@@ -99,13 +100,15 @@ class Main
     message.content = params[:content]
     message.x_location = params[:x].to_i
     message.y_location = params[:y].to_i
-    message.save
     Pusher['global'].trigger('message', {:entityID => @user.id,
                                          :username => @user.name,
                                          :xLocation => message.x_location, 
                                          :yLocation => message.y_location,
                                          :distance => 128,
                                          :content => message.content}.to_json)
+                                         
+    message.save
+
     return 200
   end
   
