@@ -51,25 +51,17 @@ $(document).ready(function(){
       $(".you").stop(true, true);
       if (e.keyCode == LARROW){
         if (pos.left - 16 < 0) return false;
-        if (allObstructions.filter(function(){
-          return ($(this).position().top == pos.top && $(this).position().left == pos.left - 16)
-        }).length == 0) $('.you').animate({left: '-=16'}, 0);
+        if (!obstructed(pos.left-16, pos.top)) $('.you').animate({left: '-=16'}, 0);
       }
       if (e.keyCode == UARROW){
         if (pos.top - 16 < 0) return false;
-        if (allObstructions.filter(function(){
-          return ($(this).position().top == pos.top - 16 && $(this).position().left == pos.left)
-        }).length == 0) $('.you').animate({top: '-=16'},  0);
+        if (!obstructed(pos.left, pos.top-16)) $('.you').animate({top: '-=16'}, 0);
       }  
       if (e.keyCode == RARROW){
-        if (allObstructions.filter(function(){
-          return ($(this).position().top == pos.top && $(this).position().left == pos.left + 16)
-        }).length == 0) $('.you').animate({left: '+=16'}, 0);
+        if (!obstructed(pos.left+16, pos.top)) $('.you').animate({left: '+=16'}, 0);
       }  
       if (e.keyCode == DARROW){
-        if (allObstructions.filter(function(){
-          return ($(this).position().top == pos.top + 16 && $(this).position().left == pos.left)
-        }).length == 0) $('.you').animate({top: '+=16'},  0);
+        if (!obstructed(pos.left, pos.top+16)) $('.you').animate({top: '+=16'}, 0);
       }  
       newpos = $(".you").position();
       if (pos.top != newpos.top || pos.left != newpos.left){
@@ -160,4 +152,12 @@ function distanceTo(entityB){
   var coordsB = [entityB.position().left, entityB.position().top];
   
   return Math.sqrt(Math.pow(coordsA[0] - coordsB[0], 2) + Math.pow(coordsA[1] - coordsB[1], 2));
+}
+
+function obstructed(x,y){
+  var allObstructions = $(".entity, .wall");
+  var actualObstructions = allObstructions.filter(function(){
+    return ($(this).position().top == y && $(this).position().left == x)
+  })
+  return (actualObstructions.length != 0)
 }

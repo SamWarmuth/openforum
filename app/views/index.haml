@@ -6,8 +6,8 @@
     -User.all.find_all{|u| u.id != @user.id}.each do |user|
       .entity{:style => "left: #{user.x_location}px; top: #{user.y_location}px; background: #{user.color}", :id => user.id}
         .callout= user.name
-    -200.times do
-      .wall{:style => "left: #{rand(50)*16}px; top: #{rand(50)*16}px;"}
+    -Wall.all.each do |wall|
+      .wall{:style => "left: #{wall.x}px; top: #{wall.y}px; background-color: #{wall.color};"}
     
 .information
   
