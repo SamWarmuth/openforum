@@ -1,9 +1,14 @@
 .map-container
   .map-view
     .entity.you{:style => "left: #{@user.x_location}px; top: #{@user.y_location}px; background: #{@user.color}", :id => @user.id}
+      .callout= @user.name
     .reach-ring{:style => "left: #{@user.x_location - 120}px; top: #{@user.y_location - 120}px;"}
     -User.all.find_all{|u| u.id != @user.id}.each do |user|
       .entity{:style => "left: #{user.x_location}px; top: #{user.y_location}px; background: #{user.color}", :id => user.id}
+        .callout= user.name
+    -200.times do
+      .wall{:style => "left: #{rand(50)*16}px; top: #{rand(50)*16}px;"}
+    
 .information
   
 .chat

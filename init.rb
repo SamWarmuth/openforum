@@ -14,6 +14,7 @@ require "haml"
 require "sass"
 require "json"
 require "pusher"
+require "em-http"
 
 class Main < Monk::Glue
   set :app_file, __FILE__

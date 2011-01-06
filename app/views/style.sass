@@ -20,7 +20,153 @@ h1, h2, h3, h4, h5, h6, th, td, caption
 
 img
   border: 0
+
+#login-wrapper
+  margin: 20px auto
+  width: 600px
+  background: #fff
+  border: 1px solid #999
+  padding: 0
+  .box-header
+    font-size: 2em
+    text-align: center
+    font-family: helvetica, arial, sans-serif
+    font-weight: bold
+    margin: 25px auto 30px auto
+  .row
+    text-align: center
+    margin-bottom: 20px
+    .label
+      text-align: right
+      font-size: 1.4em
+      display: inline-block
+      width: 125px
+      margin-right: 10px
+    .input
+      width: 300px
+      font-size: 1.5em
+
+.awesome, .awesome:visited 
+  border: none
+  background: #222 url(/img/alert-overlay.png) repeat-x 
+  display: inline-block 
+  padding: 5px 10px 6px 
+  color: #fff 
+  text-decoration: none
+  -moz-border-radius: 5px 
+  -webkit-border-radius: 5px
+  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5)
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5)
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.25)
+  border-bottom: 1px solid rgba(0,0,0,0.25)
+  position: relative
+  cursor: pointer
+
+.awesome:hover
+  background-color: #111
+  color: #fff
+  text-decoration: none
+.awesome:active
+  top: 1px
+.small.awesome, .small.awesome:visited
+  font-size: 9px
+  padding: 3px 5px
+.medium.awesome, .medium.awesome:visited
+  font-size: 13px
+  font-weight: bold
+  line-height: 1
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.25)
+.large.awesome, .large.awesome:visited
+  font-size: 14px
+  padding: 8px 14px 9px
+.huge.awesome, .huge.awesome:visited
+  font-size: 18px
+  padding: 15px 30px 15px
+.green.awesome, .green.awesome:visited
+  background-color: #91bd09
+.green.awesome:hover
+  background-color: #749a02
+.blue.awesome, .blue.awesome:visited
+  background-color: #00669D
+.blue.awesome:hover
+  background-color: #00467D
+.red.awesome, .red.awesome:visited
+  background-color: #F32100
+.red.awesome:hover
+  background-color: #A72300
+.gray-red.awesome, .gray-red.awesome:visited
+  background-color: #BBB
+.gray-red.awesome:hover
+  background-color: #e31100
+.magenta.awesome, .magenta.awesome:visited
+  background-color: #a9014b
+.magenta.awesome:hover
+  background-color: #630030
+.orange.awesome, .orange.awesome:visited
+  background-color: #ff5c00
+.orange.awesome:hover
+  background-color: #d45500
+.yellow.awesome, .yellow.awesome:visited
+  background-color: #ffb515
+.yellow.awesome:hover
+  background-color: #fc9200
+.gray.awesome, .gray.awesome:visited, .grey.awesome, .grey.awesome:visited
+  background-color: #888
+.gray.awesome:hover, .grey.awesome:hover
+  background-color: #777
+.black.awesome, .black.awesome:visited
+  background-color: #333
+.black.awesome:hover
+  background-color: #111
+
+
+
+.disabled.awesome
+  background-color: #ccc
+.disabled.awesome:hover
+  background-color: #DDD
+
+.disabled.awesome
+  background-color: #ccc
+.disabled.awesome:hover
+  background-color: #DDD
   
+.colored-box
+  &.green
+    background: #effeb9
+    border-color: #98c700
+  &.red
+    background: #fccac3
+    border-color: #ea5338
+  &.yellow
+    background: #ffeaa7
+    border-color: #f9b418
+  &.blue
+    background: #d1e4f3
+    border-color: #4d8fcc
+  &.brown
+    background: #feeac9
+    border-color: #d38e49
+  &.gray
+    background: #eee
+    border-color: #aaa
+  border-width: 1px
+  border-style: solid
+  padding: 10px 15px
+  margin-top: 20px
+  &.head
+    margin: -15px -15px 15px -15px
+    border-radius: 0
+    border: none
+    border-bottom: 1px solid #ccc
+    
+    
+    
+    
+    
+    
+    
+    
 .entity
   position: absolute
   width: 16px
@@ -29,11 +175,23 @@ img
   -webkit-border-radius: 8px
   -moz-border-radius: 8px
   border-radius: 8px
-  background-color: black
+  .callout
+    font-size: 0.75em
+    position: absolute
+    top: 20px
+    left: -46px
+    padding: 5px
+    background: black
+    border-radius: 5px
+    opacity: 0.7
+    color: white
+    width: 100px
+    text-align: center
+    display: none
 .reach-ring
   position: absolute
-  width: 256px
-  height: 256px
+  width: 252px
+  height: 252px
   -webkit-border-radius: 128px
   -moz-border-radius: 128px
   border-radius: 128px
@@ -47,6 +205,14 @@ img
   border-radius: 6px
   border: 2px solid black
   z-index: 1000
+.wall
+  position: absolute
+  width: 16px
+  height: 16px
+  background: black
+  -webkit-border-radius: 2px
+  -moz-border-radius: 2px
+  border-radius: 2px
   
   
 .map-container

@@ -2,7 +2,6 @@ class Main
   helpers do
     def logged_in?
       return false unless request.cookies.has_key?("user_challenge") && request.cookies.has_key?("user")
-      
       user = User.get(request.cookies['user'])
       
       return false if user.nil?

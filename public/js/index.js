@@ -35,31 +35,39 @@ $(document).ready(function(){
   $(".entity").click( function(){
     pulse(this);      
   });
+  
+  $(".entity").live("mouseover", function(){
+    $(this).children(".callout").show();
+  });
+  
+  $(".entity").live("mouseout", function(){
+    $(this).children(".callout").hide();
+  });
 
   $(document).keydown(function(e){
     if (e.keyCode >= LARROW && e.keyCode <= DARROW){
       var pos = $(".you").position();
-      var allEntities = $(".entity");
+      var allObstructions = $(".entity, .wall");
       $(".you").stop(true, true);
       if (e.keyCode == LARROW){
         if (pos.left - 16 < 0) return false;
-        if (allEntities.filter(function(){
+        if (allObstructions.filter(function(){
           return ($(this).position().top == pos.top && $(this).position().left == pos.left - 16)
         }).length == 0) $('.you').animate({left: '-=16'}, 0);
       }
       if (e.keyCode == UARROW){
         if (pos.top - 16 < 0) return false;
-        if (allEntities.filter(function(){
+        if (allObstructions.filter(function(){
           return ($(this).position().top == pos.top - 16 && $(this).position().left == pos.left)
         }).length == 0) $('.you').animate({top: '-=16'},  0);
       }  
       if (e.keyCode == RARROW){
-        if (allEntities.filter(function(){
+        if (allObstructions.filter(function(){
           return ($(this).position().top == pos.top && $(this).position().left == pos.left + 16)
         }).length == 0) $('.you').animate({left: '+=16'}, 0);
       }  
       if (e.keyCode == DARROW){
-        if (allEntities.filter(function(){
+        if (allObstructions.filter(function(){
           return ($(this).position().top == pos.top + 16 && $(this).position().left == pos.left)
         }).length == 0) $('.you').animate({top: '+=16'},  0);
       }  
