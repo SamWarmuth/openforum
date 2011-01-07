@@ -47,8 +47,8 @@ $(document).ready(function(){
 
   var initloc = $(".you").position()
   var initmap = $(".map-container");
-  map.scrollLeft(initloc.left - (initmap.width()/2));
-  map.scrollTop(initloc.top - (initmap.height()/2));
+  initmap.scrollLeft(initloc.left - (initmap.width()/2));
+  initmap.scrollTop(initloc.top - (initmap.height()/2));
   
   
   $(".entity").click( function(){
