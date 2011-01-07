@@ -181,22 +181,9 @@ function updateLocation(){
   loc = $(".you").position()
   $.post("/update-location", {x: loc.left, y: loc.top});
   var map = $(".map-container");
-  if (loc.left > (map.width() + map.scrollLeft() - 64)){
-    //too far to the right
-    map.scrollLeft(loc.left - (map.width()/2));
-  }
-  if (loc.left < (map.width() + map.scrollLeft() + 64)){
-    //too far to the left
-    map.scrollLeft(loc.left - (map.width()/2));
-  }
-  if (loc.top > (map.height() + map.scrollTop() - 64)){
-    //too far to the bottom
-    map.scrollTop(loc.top - (map.height()/2));
-  }
-  if (loc.top < (map.height() + map.scrollTop() + 64)){
-    //too far to the top
-    map.scrollTop(loc.top - (map.height()/2));
-  }
+  map.scrollLeft(loc.left - (map.width()/2));
+  map.scrollTop(loc.top - (map.height()/2));
+
   console.log(loc.left, loc.top);
 }
 
