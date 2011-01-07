@@ -6,6 +6,8 @@ class Wall < CouchRest::ExtendedDocument
   property :map_id
   
   property :color, :default => "#000"
+  
+  property :creator_id
   property :date, :default => Proc.new{Time.now.to_i}
   
 end

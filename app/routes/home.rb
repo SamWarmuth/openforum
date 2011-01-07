@@ -112,4 +112,30 @@ class Main
     return 200
   end
   
+  post "/edit-wall" do
+    return 403 unless logged_in?    
+    return 400 if (params[:x].empty? || params[:y].empty? || params[:type].empty?)
+    puts params.inspect
+    
+    if params[:type] == "create"
+      wall = Wall.new
+      wall.x = params[:x].to_i
+      wall.y = params[:y].to_i
+      wall.creator_id = @user.id
+      wall.save
+    else
+      puts Wall.count
+      wall = Wall.all.find{|w| w.x == params[:x].to_i && w.y == params[:y].to_i}
+      puts wall.inspect
+      wall.destroy unless wall.nil?
+      puts Wall.count
+    end
+    
+    Pusher['global'].trigger_async('editwall', {:creator_id => @user.id,
+                                                :type => params[:type],
+                                                :x => wall.x,
+                                                :y => wall.y}.to_json)
+    
+  end
+  
 end

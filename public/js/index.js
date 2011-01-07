@@ -23,12 +23,25 @@ pusher.bind('message', function(data){
     pulse(entity);
     if (distanceTo(entity) < data.distance) addMessage(data.username, color, data.content);
   }
-  
 });
 
-$(document).ready(function(){
+pusher.bind('editwall', function(data){
+  $(".map-view").append(wall);
+  if (data.creator_id == $("#user-id").text()) return false
+  if (data.type == "create"){    
+    var wall = $("<div class='wall' style='top: " + data.y + "px; left: " + data.x + "px;'></div>");
+    $(".map-view").append(wall);
+  } else {
+    var existing = $(".wall").filter(function(){
+      return ($(this).position().top == data.y && $(this).position().left == data.x)
+    })
+    existing.remove();
+  }
+});
 
-  
+
+
+$(document).ready(function(){
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
   
@@ -42,6 +55,31 @@ $(document).ready(function(){
   
   $(".entity").live("mouseout", function(){
     $(this).children(".callout").hide();
+  });
+  
+  $(".map-view").click(function(e){
+    x = ($(".map-container").scrollLeft() + e.pageX) - ($(".map-container").scrollLeft() + e.pageX)%16;
+    y = ($(".map-container").scrollTop() + e.pageY) - ($(".map-container").scrollTop() + e.pageY)%16;
+    if ($(".entity").filter(function(){
+      return ($(this).position().top == y && $(this).position().left == x)
+    }).length != 0) return false
+    
+    if ($(".wall").filter(function(){
+      return ($(this).position().top == y && $(this).position().left == x)
+    }).length == 0) {
+      var wall = $("<div class='wall' style='top: " + y + "px; left: " + x + "px;'></div>");
+      $(".map-view").append(wall);
+      $.post("/edit-wall", {x: x, y: y, type: "create"});
+      console.log("created wall");
+    } else {
+      $.post("/edit-wall", {x: x, y: y, type: "destroy"});
+      
+      var existing = $(".wall").filter(function(){
+        return ($(this).position().top == y && $(this).position().left == x)
+      })
+      existing.remove();
+      console.log("destroyed wall");
+    }
   });
 
   $(document).keydown(function(e){
@@ -142,6 +180,23 @@ function updateLocation(){
   //send message to server with current map location
   loc = $(".you").position()
   $.post("/update-location", {x: loc.left, y: loc.top});
+  var map = $(".map-container");
+  if (loc.left > (map.width() + map.scrollLeft() - 64)){
+    //too far to the right
+    map.scrollLeft(loc.left - (map.width()/2));
+  }
+  if (loc.left < (map.width() + map.scrollLeft() + 64)){
+    //too far to the left
+    map.scrollLeft(loc.left - (map.width()/2));
+  }
+  if (loc.top > (map.height() + map.scrollTop() - 64)){
+    //too far to the bottom
+    map.scrollTop(loc.top - (map.height()/2));
+  }
+  if (loc.top < (map.height() + map.scrollTop() + 64)){
+    //too far to the top
+    map.scrollTop(loc.top - (map.height()/2));
+  }
   console.log(loc.left, loc.top);
 }
 
