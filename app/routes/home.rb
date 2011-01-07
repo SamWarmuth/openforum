@@ -82,8 +82,8 @@ class Main
     @location.x = params[:x].to_i
     @location.y = params[:y].to_i
     Pusher['global'].trigger_async('locationupdate', {:entityID => @user.id,
-                                                :xLocation => location.x, 
-                                                :yLocation => location.y}.to_json)
+                                                :xLocation => @location.x, 
+                                                :yLocation => @location.y}.to_json)
     @location.save
     
     return 200
