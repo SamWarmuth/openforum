@@ -115,7 +115,6 @@ class Main
   post "/edit-wall" do
     return 403 unless logged_in?    
     return 400 if (params[:x].empty? || params[:y].empty? || params[:type].empty?)
-    puts params.inspect
     
     if params[:type] == "create"
       wall = Wall.new
