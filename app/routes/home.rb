@@ -84,9 +84,10 @@ class Main
                                                 :xLocation => params[:x].to_i%16, 
                                                 :yLocation => params[:y].to_i%16}.to_json)
     if params[:store] == "true"
-      @location.x = params[:x].to_i%16
-      @location.y = params[:y].to_i%16
-      @location.save
+      location = @user.location
+      location.x = (params[:x].to_i % 16)
+      location.y = (params[:y].to_i % 16)
+      location.save
     end
     
     return 200

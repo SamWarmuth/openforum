@@ -1,8 +1,9 @@
 .map-container
   .map-view
-    .entity.you{:style => "left: #{@location.x}px; top: #{@location.y}px; background: #{@user.color}", :id => @user.id}
+    -location = @user.location
+    .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
       .callout= @user.name
-    .reach-ring{:style => "left: #{@location.x - 120}px; top: #{@location.y - 120}px;"}
+    .reach-ring{:style => "left: #{location.x - 120}px; top: #{location.y - 120}px;"}
     -User.all.find_all{|u| u.id != @user.id}.each do |user|
       -location = user.location
       .entity{:style => "left: #{location.x}px; top: #{location.y}px; background: #{user.color}", :id => user.id}
