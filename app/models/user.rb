@@ -21,7 +21,7 @@ class User < CouchRest::ExtendedDocument
   property :salt
   property :challenges
   
-  property :x_location, :default => 128
-  property :y_location, :default => 128
+  property :location_id
+  
   
 end
