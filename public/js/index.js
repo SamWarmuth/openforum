@@ -45,8 +45,8 @@ $(document).ready(function(){
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
 
-  loc = $(".you").position()
-  var map = $(".map-container");
+  var initloc = $(".you").position()
+  var initmap = $(".map-container");
   map.scrollLeft(loc.left - (map.width()/2));
   map.scrollTop(loc.top - (map.height()/2));
   
