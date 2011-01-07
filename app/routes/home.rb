@@ -125,7 +125,6 @@ class Main
     else
       puts Wall.count
       wall = Wall.all.find{|w| w.x == params[:x].to_i && w.y == params[:y].to_i}
-      puts wall.inspect
       wall.destroy unless wall.nil?
       puts Wall.count
     end
