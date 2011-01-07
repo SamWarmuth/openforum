@@ -96,21 +96,21 @@ $(document).ready(function(){
       $(".you").stop(true, true);
       if (e.keyCode == LARROW){
         if (pos.left - 16 < 0) return false;
-        if (!obstructed(pos.left-16, pos.top)) $('.you').animate({left: '-=16'}, 0);
+        if (!obstructed(pos.left-16, pos.top)) $('.you').css('left', pos.left-16);
       }
       if (e.keyCode == UARROW){
         if (pos.top - 16 < 0) return false;
-        if (!obstructed(pos.left, pos.top-16)) $('.you').animate({top: '-=16'}, 0);
+        if (!obstructed(pos.left, pos.top-16)) $('.you').css('top', pos.top-16);
       }  
       if (e.keyCode == RARROW){
-        if (!obstructed(pos.left+16, pos.top)) $('.you').animate({left: '+=16'}, 0);
+        if (!obstructed(pos.left+16, pos.top)) $('.you').css('left', pos.left+16);
       }  
       if (e.keyCode == DARROW){
-        if (!obstructed(pos.left, pos.top+16)) $('.you').animate({top: '+=16'}, 0);
+        if (!obstructed(pos.left, pos.top+16)) $('.you').css('top', pos.top+16);
       }
       newpos = $(".you").position();
       if (pos.top != newpos.top || pos.left != newpos.left){
-        $(".reach-ring").animate({left: newpos.left - 120, top: newpos.top - 120}, 0)
+        $(".reach-ring").css('left', newpos.left - 120).css('top', newpos.top - 120);
         updateLocation();
       }
       return false;
