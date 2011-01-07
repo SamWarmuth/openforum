@@ -44,6 +44,12 @@ pusher.bind('editwall', function(data){
 $(document).ready(function(){
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
+
+  loc = $(".you").position()
+  var map = $(".map-container");
+  map.scrollLeft(loc.left - (map.width()/2));
+  map.scrollTop(loc.top - (map.height()/2));
+  
   
   $(".entity").click( function(){
     pulse(this);      
@@ -56,6 +62,7 @@ $(document).ready(function(){
   $(".entity").live("mouseout", function(){
     $(this).children(".callout").hide();
   });
+  
   
   $(".map-view").click(function(e){
     x = ($(".map-container").scrollLeft() + e.pageX) - ($(".map-container").scrollLeft() + e.pageX)%16;
@@ -175,11 +182,14 @@ function addMessage(sender, color, content){
   return true;
 }
 
-
+locationCount = 0
 function updateLocation(){
   //send message to server with current map location
+  locationCount++;
+  var store = "false";
+  if (locationCount % 10 == 0) store = "true"
   loc = $(".you").position()
-  $.post("/update-location", {x: loc.left, y: loc.top});
+  $.post("/update-location", {x: loc.left, y: loc.top, store: store});
   var map = $(".map-container");
   map.scrollLeft(loc.left - (map.width()/2));
   map.scrollTop(loc.top - (map.height()/2));

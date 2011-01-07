@@ -79,12 +79,14 @@ class Main
     return 403 unless logged_in?
     return 400 if (params[:x].empty? || params[:y].empty?)
     
-    @location.x = params[:x].to_i
-    @location.y = params[:y].to_i
     Pusher['global'].trigger_async('locationupdate', {:entityID => @user.id,
-                                                :xLocation => @location.x, 
-                                                :yLocation => @location.y}.to_json)
-    @location.save
+                                                :xLocation => params[:x].to_i, 
+                                                :yLocation => params[:y].to_i}.to_json)
+    if params[:store] == "true"
+      @location.x = params[:x].to_i
+      @location.y = params[:y].to_i
+      @location.save
+    end
     
     return 200
   end
