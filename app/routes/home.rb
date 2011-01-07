@@ -78,13 +78,13 @@ class Main
   post "/update-location" do
     return 403 unless logged_in?
     return 400 if (params[:x].empty? || params[:y].empty?)
-
-    @user.x_location = params[:x].to_i
-    @user.y_location = params[:y].to_i
+    
+    @location.x = params[:x].to_i
+    @location.y = params[:y].to_i
     Pusher['global'].trigger_async('locationupdate', {:entityID => @user.id,
-                                                :xLocation => @user.x_location, 
-                                                :yLocation => @user.y_location}.to_json)
-    @user.save
+                                                :xLocation => location.x, 
+                                                :yLocation => location.y}.to_json)
+    @location.save
     
     return 200
   end
