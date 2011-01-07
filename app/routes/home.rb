@@ -22,6 +22,7 @@ class Main
       user.challenges = user.challenges[0...4]
       user.challenges.unshift((Digest::SHA2.new(512) << (64.times.map{|l|('a'..'z').to_a[rand(25)]}.join)).to_s)
       user.save
+      $cached_users[user.id] = nil
       
       response.set_cookie("user", {
         :path => "/",
@@ -79,11 +80,9 @@ class Main
   post "/update-location" do
     return 403 unless logged_in?
     return 400 if (params[:x].empty? || params[:y].empty?)
-    puts params.inspect
     
     x = params[:x].to_i - params[:x].to_i % 16
     y = params[:y].to_i - params[:y].to_i % 16
-    
     
     Pusher['global'].trigger_async('locationupdate', {:entityID => @user.id,
                                                 :xLocation => x, 

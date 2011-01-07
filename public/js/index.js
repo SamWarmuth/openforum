@@ -107,7 +107,7 @@ $(document).ready(function(){
       }  
       if (e.keyCode == DARROW){
         if (!obstructed(pos.left, pos.top+16)) $('.you').animate({top: '+=16'}, 0);
-      }  
+      }
       newpos = $(".you").position();
       if (pos.top != newpos.top || pos.left != newpos.left){
         $(".reach-ring").animate({left: newpos.left - 120, top: newpos.top - 120}, 0)
