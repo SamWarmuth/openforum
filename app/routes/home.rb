@@ -71,9 +71,6 @@ class Main
     user.name = params[:name]
     user.email = params[:email].downcase
     user.set_password(params[:password])
-    user.calendar_id = Calendar.create(:name => user.name).id
-    user.permalink = generate_permalink(user, user.name)
-    user.broadcast_ids = Broadcast.all.find_all{|b| b.announce_to_new_users == true}.map(&:id)
     user.save
     redirect "/login?success=created"
   end
