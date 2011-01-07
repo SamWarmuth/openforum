@@ -68,6 +68,7 @@ class Main
     redirect "/signup?error=empty" if params[:name].empty? || params[:email].empty? || params[:password].empty?
     
     user = User.new
+    locat
     user.name = params[:name]
     user.email = params[:email].downcase
     user.set_password(params[:password])
@@ -80,11 +81,11 @@ class Main
     return 400 if (params[:x].empty? || params[:y].empty?)
     
     Pusher['global'].trigger_async('locationupdate', {:entityID => @user.id,
-                                                :xLocation => params[:x].to_i, 
-                                                :yLocation => params[:y].to_i}.to_json)
+                                                :xLocation => params[:x].to_i%16, 
+                                                :yLocation => params[:y].to_i%16}.to_json)
     if params[:store] == "true"
-      @location.x = params[:x].to_i
-      @location.y = params[:y].to_i
+      @location.x = params[:x].to_i%16
+      @location.y = params[:y].to_i%16
       @location.save
     end
     
