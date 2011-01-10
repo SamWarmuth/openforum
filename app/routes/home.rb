@@ -132,16 +132,17 @@ class Main
       wall.creator_id = @user.id
       wall.save
     else
-      puts Wall.count
-      wall = Wall.all.find{|w| w.x == params[:x].to_i && w.y == params[:y].to_i}
-      wall.destroy unless wall.nil?
-      puts Wall.count
+      
+      walls = Wall.by_x(:key => params[:x].to_i)
+      unless walls.nil?
+        walls.find_all{|w| w.y == params[:y].to_i}.each{|w| w.destroy}
+      end
     end
     
     Pusher['global'].trigger_async('editwall', {:creator_id => @user.id,
                                                 :type => params[:type],
-                                                :x => wall.x,
-                                                :y => wall.y}.to_json)
+                                                :x => params[:x].to_i,
+                                                :y => params[:y].to_i}.to_json)
     
   end
   

@@ -41,11 +41,11 @@ pusher.bind('editwall', function(data){
     var wall = $("<div class='wall' style='top: " + data.y + "px; left: " + data.x + "px;'></div>");
     $(".map-view").append(wall);
     obstructingObjects[data.x/16][data.y/16] = true;
-    
   } else {
+    console.log("removing.");
     var existing = $(".wall").filter(function(){
       return ($(this).position().top == data.y && $(this).position().left == data.x);
-    })
+    });
     existing.remove();
     obstructingObjects[data.x/16][data.y/16] = null;
   }
@@ -80,11 +80,9 @@ $(document).ready(function(){
     y = ($(".map-container").scrollTop() + e.pageY) - ($(".map-container").scrollTop() + e.pageY)%16;
     if ($(".entity").filter(function(){
       return ($(this).position().top == y && $(this).position().left == x)
-    }).length != 0) return false
+    }).length != 0) return true;
     
-    if ($(".wall").filter(function(){
-      return ($(this).position().top == y && $(this).position().left == x)
-    }).length == 0) {
+    if (obstructingObjects[x/16][y/16] == null) {
       var wall = $("<div class='wall' style='top: " + y + "px; left: " + x + "px;'></div>");
       $(".map-view").append(wall);
       $.post("/edit-wall", {x: x, y: y, type: "create"});
@@ -117,9 +115,12 @@ $(document).ready(function(){
         if (!obstructed(pos.left, pos.top-16)) $('.you').css('top', pos.top-16);
       }  
       if (e.keyCode == RARROW){
+        if (pos.left + 16 >= $('.map-view').width()) return false;
         if (!obstructed(pos.left+16, pos.top)) $('.you').css('left', pos.left+16);
       }  
       if (e.keyCode == DARROW){
+        if (pos.top + 16 >= $('.map-view').height()) return false;
+        
         if (!obstructed(pos.left, pos.top+16)) $('.you').css('top', pos.top+16);
       }
       newpos = $(".you").position();
