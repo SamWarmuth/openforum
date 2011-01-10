@@ -59,6 +59,12 @@ pusher.bind('editwall', function(data){
 
 
 $(document).ready(function(){
+  var initloc = $(".you").position()
+  var initmap = $(".map-container");
+  initmap.scrollLeft(initloc.left - (initmap.width()/2));
+  initmap.scrollTop(initloc.top - (initmap.height()/2));
+  $('.loading-mask').hide();
+  
   new Dragdealer('distance-slider',
   {
     x: 0.5,
@@ -95,10 +101,7 @@ $(document).ready(function(){
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
 
-  var initloc = $(".you").position()
-  var initmap = $(".map-container");
-  initmap.scrollLeft(initloc.left - (initmap.width()/2));
-  initmap.scrollTop(initloc.top - (initmap.height()/2));
+
   
   
   $(".entity").live("mouseover", function(){
