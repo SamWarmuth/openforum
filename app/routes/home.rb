@@ -126,24 +126,31 @@ class Main
     return 403 unless logged_in?    
     return 400 if (params[:x].empty? || params[:y].empty? || params[:type].empty?)
     
+    return 403 if @user.power == 0
+    
     if params[:type] == "create"
       wall = Wall.new
       wall.x = params[:x].to_i
       wall.y = params[:y].to_i
       wall.creator_id = @user.id
+      wall.power = @user.power
       wall.save
     else
-      
       walls = Wall.by_x(:key => params[:x].to_i)
-      unless walls.nil?
-        walls.find_all{|w| w.y == params[:y].to_i}.each{|w| w.destroy}
-      end
+      return 404 if walls.nil?
+
+      wall = walls.find{|w| w.y == params[:y].to_i}
+      return 404 if wall.nil?
+      
+      return 403 if @user.power < wall.power
+      wall.destroy
     end
     
     Pusher['global'].trigger_async('editwall', {:creator_id => @user.id,
                                                 :type => params[:type],
                                                 :x => params[:x].to_i,
-                                                :y => params[:y].to_i}.to_json)
+                                                :y => params[:y].to_i,
+                                                :power => @user.power}.to_json)
     
   end
   

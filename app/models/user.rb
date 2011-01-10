@@ -7,7 +7,8 @@ class User < CouchRest::ExtendedDocument
   property :date, :default => Proc.new{Time.now.to_i}
   property :color, :default => Proc.new{"#" + (1..3).map{rand(16).to_s(16)}.join}
   
-  property :power, :default => 7
+  property :power, :default => 1
+  # 0 can't create walls at all. 10 is maximum -- admin level.
   
   def set_password(password)
     self.salt = 64.times.map{|l|('a'..'z').to_a[rand(25)]}.join

@@ -10,3 +10,4 @@
   = yield
   #user-id{:style => "display: none;"}= @user.id
   #user-name{:style => "display: none;"}= @user.name
+  #user-power{:style => "display: none; background-color: ##{(9 - @user.power).to_s*3}"}

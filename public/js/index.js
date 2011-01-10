@@ -8,6 +8,9 @@ ZKEY = 122;
 TKEY = 84;
 
 var UserID = "";
+var UserPower = 0;
+var UserColor = "";
+
 var obstructingObjects;
 
 
@@ -39,7 +42,7 @@ pusher.bind('editwall', function(data){
   $(".map-view").append(wall);
   if (data.creator_id == UserID) return false
   if (data.type == "create"){    
-    var wall = $("<div class='wall' style='top: " + data.y + "px; left: " + data.x + "px;'></div>");
+    var wall = $("<div class='wall' style='top: " + data.y + "px; left: " + data.x + "px; background-color: #" + (9 - data.power) + (9 - data.power) + (9 - data.power)+";'></div>");
     $(".map-view").append(wall);
     obstructingObjects[data.x/16][data.y/16] = true;
   } else {
@@ -56,6 +59,9 @@ pusher.bind('editwall', function(data){
 
 $(document).ready(function(){
   UserID = $("#user-id").text();
+  UserColor = $("#user-power").css("background-color");
+  UserPower = rgb2power(UserColor);
+  
   setObstructions();
   
   window.setInterval("glow()", 750)
@@ -84,19 +90,22 @@ $(document).ready(function(){
     }).length != 0) return true;
     
     if (obstructingObjects[x/16][y/16] == null) {
-      var wall = $("<div class='wall' style='top: " + y + "px; left: " + x + "px;'></div>");
+      var wall = $("<div class='wall' style='top: " + y + "px; left: " + x + "px; background-color:"+UserColor+" ;'></div>");
       $(".map-view").append(wall);
       $.post("/edit-wall", {x: x, y: y, type: "create"});
       console.log("created wall");
       obstructingObjects[x/16][y/16] = true;
       
     } else {
-      $.post("/edit-wall", {x: x, y: y, type: "destroy"});
+      
       
       var existing = $(".wall").filter(function(){
         return ($(this).position().top == y && $(this).position().left == x)
-      })
+      });
+      if (UserPower > rgb2power(existing.css("background-color"))) return false;
       existing.remove();
+      
+      $.post("/edit-wall", {x: x, y: y, type: "destroy"});
       console.log("destroyed wall");
       obstructingObjects[x/16][y/16] = null;
     }
@@ -234,4 +243,16 @@ function setObstructions(){
   $(".entity, .wall").each(function(){
     obstructingObjects[$(this).position().left/16][$(this).position().top/16] = true;
   });
+}
+
+
+function rgb2hex(rgb){
+ rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+ return ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2);
+}
+function rgb2power(rgb){
+ hex = rgb2hex(rgb);
+ return parseInt(hex, 16);
 }
