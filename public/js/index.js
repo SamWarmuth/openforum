@@ -56,7 +56,6 @@ pusher.bind('editwall', function(data){
 });
 
 
-
 $(document).ready(function(){
   UserID = $("#user-id").text();
   UserColor = $("#user-power").css("background-color");
@@ -79,6 +78,45 @@ $(document).ready(function(){
   
   $(".entity").live("mouseout", function(){
     $(this).children(".callout").hide();
+  });
+  
+  $(".touchpad").click(function(){
+    console.log("click;");
+    
+    var pos = $(".you").position();
+    obstructingObjects[pos.left/16][pos.top/16] = null;
+    $(".you").stop(true, true);
+    var pad = $(this);
+    if (pad.hasClass("left")){
+      if (pos.left - 16 < 0) return false;
+      if (!obstructed(pos.left-16, pos.top)) $('.you').css('left', pos.left-16);
+    }
+    if (pad.hasClass("top")){
+      if (pos.top - 16 < 0) return false;
+      if (!obstructed(pos.left, pos.top-16)) $('.you').css('top', pos.top-16);
+    }  
+    if (pad.hasClass("right")){
+      if (pos.left + 16 >= $('.map-view').width()) return false;
+      if (!obstructed(pos.left+16, pos.top)) $('.you').css('left', pos.left+16);
+    }  
+    if (pad.hasClass("bottom")){
+      if (pos.top + 16 >= $('.map-view').height()) return false;
+      if (!obstructed(pos.left, pos.top+16)) $('.you').css('top', pos.top+16);
+    }
+    newpos = $(".you").position();
+    obstructingObjects[newpos.left/16][newpos.top/16] = true;
+    
+    if (pos.top != newpos.top || pos.left != newpos.left){
+      $(".reach-ring").css('left', newpos.left - 120).css('top', newpos.top - 120);
+      updateLocation();
+    }
+    return false;
+    
+    evt.keyCode = evt.which;
+    $(document).trigger(evt);
+    console.log("clock;");
+    
+    return true;
   });
   
   

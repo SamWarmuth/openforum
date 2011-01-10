@@ -12,6 +12,13 @@
       .wall{:id => wall.id, :style => "left: #{wall.x}px; top: #{wall.y}px; background-color: ##{(9 - wall.power).to_s*3};"}
   
 .chat
+  -agent = request.env["HTTP_USER_AGENT"]
+  -iOS = (agent.include?("mobile") && agent.include?("safari"))
+  -if iOS
+    .touchpad.left
+    .touchpad.right
+    .touchpad.top
+    .touchpad.bottom
   #tabs-1.message-list
         
 
