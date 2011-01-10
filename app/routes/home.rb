@@ -89,7 +89,8 @@ class Main
     
     Pusher['global'].trigger_async('locationupdate', {:entityID => @user.id,
                                                 :xLocation => x, 
-                                                :yLocation => y}.to_json)
+                                                :yLocation => y,
+                                                :date => params[:date]}.to_json)
     
     if params[:store] == "true"
       location = @user.location

@@ -16,11 +16,12 @@ pusher = new Pusher('834b3ca0e7e453c73863', "global");
 pusher.bind('locationupdate', function(data) {
   if (data.entityID == UserID) return false;
   var entity = $("#" + data.entityID);
+  if (entity.data("lastMoved") > data.date) return false;
+  entity.data("lastMoved", data.date);
   var pos = entity.position();
   obstructingObjects[pos.left/16][pos.top/16] = null;
   entity.animate({left: data.xLocation}, 0).animate({top: data.yLocation}, 0);
   obstructingObjects[data.xLocation/16][data.yLocation/16] = true;
-  
   
 });
 
@@ -209,7 +210,7 @@ function updateLocation(){
   map.scrollLeft(loc.left - (map.width()/2));
   map.scrollTop(loc.top - (map.height()/2));
   
-  $.post("/update-location", {x: loc.left, y: loc.top, store: store});
+  $.post("/update-location", {x: loc.left, y: loc.top, store: store, date: (new Date).getTime()});
 }
 
 function distanceTo(entityB){
