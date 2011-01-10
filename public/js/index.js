@@ -169,10 +169,10 @@ function pulse(entity){
   
   $(".map-view").append(ring);
   //120px is 128px (centered) minus half the width/height of the circle
-  ring.animate({left: '-=121px',
-                top: '-=121px',
-                width: '256px',
-                height: '256px',
+  ring.animate({left: '-=118px',
+                top: '-=118px',
+                width: '250px',
+                height: '250px',
                 'border-radius': '128px', 
                 opacity: '0.1'
                }, 500, 'easeOutQuad', function(){
