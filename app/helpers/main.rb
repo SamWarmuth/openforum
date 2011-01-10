@@ -12,7 +12,6 @@ class Main
       return false unless user.challenges && user.challenges.include?(request.cookies['user_challenge'])
 
       @user = user
-      @location = @user.location
       return true
     end
   end

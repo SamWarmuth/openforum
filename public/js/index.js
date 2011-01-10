@@ -7,18 +7,27 @@ ENTER = 13;
 ZKEY = 122;
 TKEY = 84;
 
+var UserID = "";
+var obstructingObjects;
+
 
 pusher = new Pusher('834b3ca0e7e453c73863', "global");
 
 pusher.bind('locationupdate', function(data) {
-  if (data.entityID == $("#user-id").text()) return false;
-  $("#" + data.entityID).animate({left: data.xLocation}, 0).animate({top: data.yLocation}, 0)
+  if (data.entityID == UserID) return false;
+  var entity = $("#" + data.entityID);
+  var pos = entity.position();
+  obstructingObjects[pos.left/16][pos.top/16] = null;
+  entity.animate({left: data.xLocation}, 0).animate({top: data.yLocation}, 0);
+  obstructingObjects[data.xLocation/16][data.yLocation/16] = true;
+  
+  
 });
 
 pusher.bind('message', function(data){
   var entity = $("#"+data.entityID);
   var color = entity.css('background-color');
-  if ($("#user-id").text() != data.entityID){
+  if (UserID != data.entityID){
     console.log(distanceTo(entity) + " from you (max: "+data.distance+")");
     pulse(entity);
     if (distanceTo(entity) < data.distance) addMessage(data.username, color, data.content);
@@ -27,21 +36,27 @@ pusher.bind('message', function(data){
 
 pusher.bind('editwall', function(data){
   $(".map-view").append(wall);
-  if (data.creator_id == $("#user-id").text()) return false
+  if (data.creator_id == UserID) return false
   if (data.type == "create"){    
     var wall = $("<div class='wall' style='top: " + data.y + "px; left: " + data.x + "px;'></div>");
     $(".map-view").append(wall);
+    obstructingObjects[data.x/16][data.y/16] = true;
+    
   } else {
     var existing = $(".wall").filter(function(){
-      return ($(this).position().top == data.y && $(this).position().left == data.x)
+      return ($(this).position().top == data.y && $(this).position().left == data.x);
     })
     existing.remove();
+    obstructingObjects[data.x/16][data.y/16] = null;
   }
 });
 
 
 
 $(document).ready(function(){
+  UserID = $("#user-id").text();
+  setObstructions();
+  
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
 
@@ -50,10 +65,6 @@ $(document).ready(function(){
   initmap.scrollLeft(initloc.left - (initmap.width()/2));
   initmap.scrollTop(initloc.top - (initmap.height()/2));
   
-  
-  $(".entity").click( function(){
-    pulse(this);      
-  });
   
   $(".entity").live("mouseover", function(){
     $(this).children(".callout").show();
@@ -78,6 +89,8 @@ $(document).ready(function(){
       $(".map-view").append(wall);
       $.post("/edit-wall", {x: x, y: y, type: "create"});
       console.log("created wall");
+      obstructingObjects[x/16][y/16] = true;
+      
     } else {
       $.post("/edit-wall", {x: x, y: y, type: "destroy"});
       
@@ -86,13 +99,14 @@ $(document).ready(function(){
       })
       existing.remove();
       console.log("destroyed wall");
+      obstructingObjects[x/16][y/16] = null;
     }
   });
 
   $(document).keydown(function(e){
     if (e.keyCode >= LARROW && e.keyCode <= DARROW){
       var pos = $(".you").position();
-      var allObstructions = $(".entity, .wall");
+      obstructingObjects[pos.left/16][pos.top/16] = null;
       $(".you").stop(true, true);
       if (e.keyCode == LARROW){
         if (pos.left - 16 < 0) return false;
@@ -109,6 +123,8 @@ $(document).ready(function(){
         if (!obstructed(pos.left, pos.top+16)) $('.you').css('top', pos.top+16);
       }
       newpos = $(".you").position();
+      obstructingObjects[newpos.left/16][newpos.top/16] = true;
+      
       if (pos.top != newpos.top || pos.left != newpos.left){
         $(".reach-ring").css('left', newpos.left - 120).css('top', newpos.top - 120);
         updateLocation();
@@ -164,7 +180,6 @@ function pulse(entity){
 }
 
 function sendMessage(message){
-  var userID = $("#user-id").text();
   var color = $(".you").css('background-color');
   var loc = $(".you").position()
   addMessage($("#user-name").text(), color, message);
@@ -189,12 +204,11 @@ function updateLocation(){
   var store = "false";
   if (locationCount % 10 == 0) store = "true"
   loc = $(".you").position()
-  $.post("/update-location", {x: loc.left, y: loc.top, store: store});
   var map = $(".map-container");
   map.scrollLeft(loc.left - (map.width()/2));
   map.scrollTop(loc.top - (map.height()/2));
-
-  console.log(loc.left, loc.top);
+  
+  $.post("/update-location", {x: loc.left, y: loc.top, store: store});
 }
 
 function distanceTo(entityB){
@@ -207,9 +221,15 @@ function distanceTo(entityB){
 }
 
 function obstructed(x,y){
-  var allObstructions = $(".entity, .wall");
-  var actualObstructions = allObstructions.filter(function(){
-    return ($(this).position().top == y && $(this).position().left == x)
-  })
-  return (actualObstructions.length != 0)
+  return (obstructingObjects[x / 16][y / 16] == true)
+}
+
+function setObstructions(){
+  obstructingObjects = new Array($('.map-view').width() / 16);
+  var mapHeight = $('.map-view').height() / 16;
+  for (i = 0; i < obstructingObjects.length; i++) obstructingObjects[i] = new Array(mapHeight);
+  
+  $(".entity, .wall").each(function(){
+    obstructingObjects[$(this).position().left/16][$(this).position().top/16] = true;
+  });
 }
