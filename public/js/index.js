@@ -42,16 +42,16 @@ pusher.bind('editwall', function(data){
   $(".map-view").append(wall);
   if (data.creator_id == UserID) return false
   if (data.type == "create"){    
-    var wall = $("<div class='wall' style='top: " + data.y + "px; left: " + data.x + "px; background-color: #" + (9 - data.power) + (9 - data.power) + (9 - data.power)+";'></div>");
+    var wall = $("<div class='wall' style='top: " + data.y + "px; left: " + data.x + "px; background-color: #" + (9 - data.power) + (9 - data.power) + (9 - data.power)+";'></div>").attr("id", data.wall_id);
     $(".map-view").append(wall);
+    
     obstructingObjects[data.x/16][data.y/16] = true;
+    
   } else {
-    console.log("removing.");
-    var existing = $(".wall").filter(function(){
-      return ($(this).position().top == data.y && $(this).position().left == data.x);
-    });
-    existing.remove();
+    console.log("removing " + data.wall_id + ".");
+    var pos = 
     obstructingObjects[data.x/16][data.y/16] = null;
+    $("#"+data.wall_id).remove();
   }
 });
 
@@ -92,20 +92,21 @@ $(document).ready(function(){
     if (obstructingObjects[x/16][y/16] == null) {
       var wall = $("<div class='wall' style='top: " + y + "px; left: " + x + "px; background-color:"+UserColor+" ;'></div>");
       $(".map-view").append(wall);
-      $.post("/edit-wall", {x: x, y: y, type: "create"});
+      $.post("/edit-wall", {x: x, y: y, type: "create"}, function(data){
+        wall.attr('id', data);
+        console.log("returned wall id: " + data);
+      });
       console.log("created wall");
       obstructingObjects[x/16][y/16] = true;
       
-    } else {
-      
-      
+    } else {      
       var existing = $(".wall").filter(function(){
         return ($(this).position().top == y && $(this).position().left == x)
       });
       if (UserPower > rgb2power(existing.css("background-color"))) return false;
       existing.remove();
       
-      $.post("/edit-wall", {x: x, y: y, type: "destroy"});
+      $.post("/edit-wall", {x: x, y: y, wall_id: existing.attr('id'), type: "destroy"});
       console.log("destroyed wall");
       obstructingObjects[x/16][y/16] = null;
     }

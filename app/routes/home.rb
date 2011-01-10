@@ -124,34 +124,40 @@ class Main
   
   post "/edit-wall" do
     return 403 unless logged_in?    
-    return 400 if (params[:x].empty? || params[:y].empty? || params[:type].empty?)
-    
+    return 400 if params[:type].empty?
     return 403 if @user.power == 0
-    
+    wall = nil
     if params[:type] == "create"
+      return 400 if (params[:x].empty? || params[:y].empty?)
+      
       wall = Wall.new
       wall.x = params[:x].to_i
       wall.y = params[:y].to_i
       wall.creator_id = @user.id
       wall.power = @user.power
       wall.save
+      wall_id = wall.id
+      #see comment below
     else
-      walls = Wall.by_x(:key => params[:x].to_i)
-      return 404 if walls.nil?
-
-      wall = walls.find{|w| w.y == params[:y].to_i}
+      wall = Wall.get(params[:wall_id])
       return 404 if wall.nil?
       
       return 403 if @user.power < wall.power
+      wall_id = wall.id
       wall.destroy
+      #need to save the id before destruction, as it is removed.
     end
+    
     
     Pusher['global'].trigger_async('editwall', {:creator_id => @user.id,
                                                 :type => params[:type],
                                                 :x => params[:x].to_i,
                                                 :y => params[:y].to_i,
+                                                :wall_id => wall_id,
                                                 :power => @user.power}.to_json)
     
+    
+    return wall.id
   end
   
 end
