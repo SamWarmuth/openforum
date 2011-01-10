@@ -83,7 +83,7 @@ $(document).ready(function(){
       } else if ( x < 0.3){
         $(".red-bar").text("Quiet");
       } else if (x < 0.65){
-        $(".red-bar").text("Average");
+        $(".red-bar").text("Medium");
       } else if (x < 0.85){
         $(".red-bar").text("Yell");
       } else {
