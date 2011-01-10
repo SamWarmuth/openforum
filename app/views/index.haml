@@ -14,11 +14,10 @@
 .chat
   -agent = request.env["HTTP_USER_AGENT"]
   -iOS = (agent.include?("mobile") && agent.include?("safari"))
-  -if iOS
-    .touchpad.left
-    .touchpad.right
-    .touchpad.top
-    .touchpad.bottom
+  .touchpad.left
+  .touchpad.right
+  .touchpad.top
+  .touchpad.bottom
   #tabs-1.message-list
         
 
