@@ -11,6 +11,8 @@ var UserID = "";
 var UserPower = 0;
 var UserColor = "";
 
+var chatDistance = 128;
+
 var obstructingObjects;
 
 
@@ -33,7 +35,7 @@ pusher.bind('message', function(data){
   var color = entity.css('background-color');
   if (UserID != data.entityID){
     console.log(distanceTo(entity) + " from you (max: "+data.distance+")");
-    pulse(entity);
+    pulse(entity, data.distance);
     if (distanceTo(entity) < data.distance) addMessage(data.username, color, data.content);
   }
 });
@@ -57,6 +59,33 @@ pusher.bind('editwall', function(data){
 
 
 $(document).ready(function(){
+  new Dragdealer('distance-slider',
+  {
+    x: 0.5,
+    animationCallback: function(x, y)
+    {
+      chatDistance = 512*x*x;
+      var ring = $(".reach-ring");
+      var you = $(".you")
+      var pos = you.position();
+      ring.css('left', (6 + chatDistance/-1)+'px').css('top', (6 + chatDistance/-1)+'px');
+      ring.width(chatDistance*2);
+      ring.height(chatDistance*2);
+      ring.css('border-radius', (chatDistance)+'px');
+      if (x < 0.1){
+        $(".red-bar").text("Whisper");
+      } else if ( x < 0.3){
+        $(".red-bar").text("Quiet");
+      } else if (x < 0.65){
+        $(".red-bar").text("Average");
+      } else if (x < 0.85){
+        $(".red-bar").text("Yell");
+      } else {
+        $(".red-bar").text("Shout");
+      }
+      console.log(x);
+    }
+  });
   UserID = $("#user-id").text();
   UserColor = $("#user-power").css("background-color");
   UserPower = rgb2power(UserColor);
@@ -107,7 +136,6 @@ $(document).ready(function(){
     obstructingObjects[newpos.left/16][newpos.top/16] = true;
     
     if (pos.top != newpos.top || pos.left != newpos.left){
-      $(".reach-ring").css('left', newpos.left - 120).css('top', newpos.top - 120);
       updateLocation();
     }
     return false;
@@ -176,7 +204,6 @@ $(document).ready(function(){
       obstructingObjects[newpos.left/16][newpos.top/16] = true;
       
       if (pos.top != newpos.top || pos.left != newpos.left){
-        $(".reach-ring").css('left', newpos.left - 120).css('top', newpos.top - 120);
         updateLocation();
       }
       return false;
@@ -186,7 +213,7 @@ $(document).ready(function(){
       $("#chat-input").val("");
       if (message == "") return false;
       sendMessage(message);
-      pulse($(".you"));
+      pulse($(".you"), chatDistance);
       return false;
     }
     if (e.keyCode == TKEY){
@@ -208,7 +235,7 @@ function glow(){
   $(".you").animate({opacity: 0.5}, 50).animate({opacity: 1}, 50);
 }
 
-function pulse(entity){
+function pulse(entity, distance){
   entity = $(entity);
   var identity = (new Date).getTime();
   var ring = $("<div class='ring'></div>")
@@ -217,11 +244,11 @@ function pulse(entity){
   
   $(".map-view").append(ring);
   //120px is 128px (centered) minus half the width/height of the circle
-  ring.animate({left: '-=118px',
-                top: '-=118px',
-                width: '250px',
-                height: '250px',
-                'border-radius': '128px', 
+  ring.animate({left: "-="+(distance - 10)+"px",
+                top: "-=" +(distance - 10)+"px",
+                width: (distance*2 - 8) +'px',
+                height: (distance*2 - 8) +'px',
+                'border-radius': distance+'px', 
                 opacity: '0.1'
                }, 500, 'easeOutQuad', function(){
     ring.remove();
@@ -233,7 +260,7 @@ function sendMessage(message){
   var color = $(".you").css('background-color');
   var loc = $(".you").position()
   addMessage($("#user-name").text(), color, message);
-  $.post("/send-message", {x: loc.left, y: loc.top, content: message});
+  $.post("/send-message", {x: loc.left, y: loc.top, content: message, distance: chatDistance});
   
   console.log("You ("+loc.left+":"+loc.top+"): "+message);
 }

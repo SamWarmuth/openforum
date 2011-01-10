@@ -114,7 +114,7 @@ class Main
                                          :username => @user.name,
                                          :xLocation => message.x_location, 
                                          :yLocation => message.y_location,
-                                         :distance => 128,
+                                         :distance => params[:distance],
                                          :content => message.content}.to_json)
                                          
     message.save

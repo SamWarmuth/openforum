@@ -2,8 +2,7 @@
   .map-view
     -location = @user.location
     .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
-      .callout= @user.name
-    .reach-ring{:style => "left: #{location.x - 120}px; top: #{location.y - 120}px;"}
+      .reach-ring{:style => "left: #{- 120}px; top: #{- 120}px;"}
     -User.all.find_all{|u| u.id != @user.id}.each do |user|
       -location = user.location
       .entity{:style => "left: #{location.x}px; top: #{location.y}px; background: #{user.color}", :id => user.id}
@@ -13,16 +12,19 @@
   
 .chat
   -agent = request.env["HTTP_USER_AGENT"]
-  -iOS = (agent.include?("mobile") && agent.include?("safari"))
-  .touchpad.left
-  .touchpad.right
-  .touchpad.top
-  .touchpad.bottom
+  -iOS = (agent.include?("mobile"))
+  -if iOS
+    .touchpad.left
+    .touchpad.right
+    .touchpad.top
+    .touchpad.bottom
   #tabs-1.message-list
-        
+  .top-spaced
+    #distance-slider.dragdealer.rounded-cornered
+      .red-bar.handle Average
 
   %input#chat-input{:type => "text"}
-  
+  #dragdealer
   
   
 %script{:src => "/js/index.js", :type => "text/javascript"}
