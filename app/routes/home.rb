@@ -13,6 +13,9 @@ class Main
     
     if @user.map_id != @map.id
       @user.map_id = @map.id
+      loc = @user.location
+      loc.x, loc.y = @map.spawn_points.first
+      loc.save
       @user.save
     end
     
