@@ -15,6 +15,8 @@ require "sass"
 require "json"
 require "pusher"
 require "em-http"
+require "rufus/scheduler"
+
 
 class Main < Monk::Glue
   set :app_file, __FILE__
@@ -31,10 +33,21 @@ Pusher.app_id = '3520'
 Pusher.key = '834b3ca0e7e453c73863'
 Pusher.secret = '479ee215c70a2fe36965'
 
-
 # Load all application files.
 Dir[root_path("app/**/*.rb")].each do |file|
   require file
 end
 
-Main.run! :port => 80if Main.run?
+if defined?(Scheduler).nil?
+  Scheduler = Rufus::Scheduler.start_new
+  
+  NPC.all.each do |npc|
+    next unless npc.activated
+    Scheduler.every npc.speak_every do
+      npc.speak
+    end
+  end
+end
+
+
+Main.run! :port => 80 if Main.run?

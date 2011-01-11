@@ -24,6 +24,9 @@ class User < CouchRest::ExtendedDocument
   property :salt
   property :challenges
   
+  property :map_id
+  view_by :map_id
+  
   property :location_id
   
   def location

@@ -2,8 +2,16 @@ class Map < CouchRest::ExtendedDocument
   use_database COUCHDB_SERVER
 
   property :name
-  #walls[[x,y]] == color (string)   :: no falses, just remove them.
     
   property :date, :default => Proc.new{Time.now.to_i}
   
+  def walls
+    Wall.by_map_id(:key => self.id)
+  end
+  def users
+    User.by_map_id(:key => self.id)
+  end
+  def npcs
+    NPC.by_map_id(:key => self.id)
+  end
 end

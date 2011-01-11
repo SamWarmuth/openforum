@@ -7,30 +7,39 @@
   .map-view
     -location = @user.location
     .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
-      .reach-ring{:style => "left: #{- 120}px; top: #{- 120}px;"}
-    -User.all.find_all{|u| u.id != @user.id}.each do |user|
+      .reach-ring{:style => "left: -120px; top: -120px;"}
+      
+    -@map.users.find_all{|u| u.id != @user.id}.each do |user|
       -location = user.location
       .entity{:style => "left: #{location.x}px; top: #{location.y}px; background: #{user.color}", :id => user.id}
         .callout= user.name
-    -Wall.all.each do |wall|
+    -@map.npcs.each do |npc|
+      -location = npc.location
+      .entity{:style => "left: #{location.x}px; top: #{location.y}px; background: #{npc.color}", :id => npc.id}
+        .callout= npc.name
+    -@map.walls.each do |wall|
       .wall{:id => wall.id, :style => "left: #{wall.x}px; top: #{wall.y}px; background-color: ##{(9 - wall.power).to_s*3};"}
   
 .chat
-  .settings-tab
-  -agent = request.env["HTTP_USER_AGENT"]
-  -iOS = (agent.include?("mobile"))
-  -if iOS
-    .touchpad.left
-    .touchpad.right
-    .touchpad.top
-    .touchpad.bottom
   #tabs-1.message-list
   .top-spaced
     #distance-slider.dragdealer.rounded-cornered
       .red-bar.handle Medium
-
   %input#chat-input{:type => "text"}
   #dragdealer
+  .settings
+    Click Creates:
+    .radios{:style => "margin-left: 10px;"}
+      %input{:type => "radio", :name => "create", :value => "wall", :checked => "checked"}
+      Wall
+      %input{:type => "radio", :value => "sign", :name => "create"}
+      Sign
+      %input{:type => "radio", :value => "none", :name => "create"}
+      Nothing
+    
+    
+    
+    .settings-tab
   
   
 %script{:src => "/js/index.js", :type => "text/javascript"}

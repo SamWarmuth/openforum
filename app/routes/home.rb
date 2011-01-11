@@ -3,6 +3,21 @@ class Main
   
   get "/" do
     redirect "/login" unless logged_in?
+    haml :map_list
+  end
+  
+  get "/m/:map_id" do
+    redirect "/login" unless logged_in?
+    @map = Map.get(params[:map_id])
+    redirect "/404" if @map.nil?
+    
+    if @user.map_id != @map.id
+      @user.map_id = @map.id
+      @user.save
+    end
+    
+    
+    
     haml :index
   end
   
@@ -87,10 +102,10 @@ class Main
     x = params[:x].to_i - params[:x].to_i % 16
     y = params[:y].to_i - params[:y].to_i % 16
     
-    Pusher['global'].trigger_async('locationupdate', {:entityID => @user.id,
-                                                :xLocation => x, 
-                                                :yLocation => y,
-                                                :date => params[:date]}.to_json)
+    Pusher[@user.map_id].trigger_async('locationupdate', {:entityID => @user.id,
+                                                          :xLocation => x, 
+                                                          :yLocation => y,
+                                                          :date => params[:date]}.to_json)
     
     if params[:store] == "true"
       location = @user.location
@@ -109,8 +124,9 @@ class Main
     message.content = params[:content]
     message.x_location = params[:x].to_i
     message.y_location = params[:y].to_i
+    message.map_id = @user.map_id
     
-    Pusher['global'].trigger_async('message', {:entityID => @user.id,
+    Pusher[message.map_id].trigger_async('message', {:entityID => @user.id,
                                          :username => @user.name,
                                          :xLocation => message.x_location, 
                                          :yLocation => message.y_location,
@@ -135,6 +151,7 @@ class Main
       wall.y = params[:y].to_i
       wall.creator_id = @user.id
       wall.power = @user.power
+      wall.map_id = @user.map_id
       wall.save
       wall_id = wall.id
       #see comment below
@@ -149,7 +166,7 @@ class Main
     end
     
     
-    Pusher['global'].trigger_async('editwall', {:creator_id => @user.id,
+    Pusher[@user.map_id].trigger_async('editwall', {:creator_id => @user.id,
                                                 :type => params[:type],
                                                 :x => params[:x].to_i,
                                                 :y => params[:y].to_i,

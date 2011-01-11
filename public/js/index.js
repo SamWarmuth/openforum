@@ -1,22 +1,27 @@
-LARROW = 37;
-UARROW = 38;
-RARROW = 39;
-DARROW = 40;
-SPACE = 32;
-ENTER = 13;
-ZKEY = 122;
-TKEY = 84;
+var LARROW = 37;
+var UARROW = 38;
+var RARROW = 39;
+var DARROW = 40;
+var SPACE = 32;
+var ENTER = 13;
+var ZKEY = 122;
+var TKEY = 84;
 
-var UserID = "";
-var UserPower = 0;
+var MapID = window.mapID;
+var UserID = window.userID;
+var UserPower = window.userPower;
+var UserName = window.userName;
+
 var UserColor = "";
+
+var clickCreate = "wall";
 
 var chatDistance = 128;
 
 var obstructingObjects;
 
 
-pusher = new Pusher('834b3ca0e7e453c73863', "global");
+pusher = new Pusher('834b3ca0e7e453c73863', MapID);
 
 pusher.bind('locationupdate', function(data) {
   if (data.entityID == UserID) return false;
@@ -64,6 +69,7 @@ $(document).ready(function(){
   initmap.scrollLeft(initloc.left - (initmap.width()/2));
   initmap.scrollTop(initloc.top - (initmap.height()/2));
   $('.loading-mask').hide();
+  humanMsg.displayMsg('<strong>Welcome to the Metaverse.</strong>');
   
   new Dragdealer('distance-slider',
   {
@@ -92,7 +98,6 @@ $(document).ready(function(){
       console.log(x);
     }
   });
-  UserID = $("#user-id").text();
   UserColor = $("#user-power").css("background-color");
   UserPower = rgb2power(UserColor);
   
@@ -101,8 +106,14 @@ $(document).ready(function(){
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
 
-
-  
+  $(".settings-tab").click(function(){
+    if ($(".settings").position().top < -10){
+      $(".settings").animate({top: 0}, 500);
+    }else{
+      $(".settings").animate({top: -150}, 500);
+    }
+    
+  });
   
   $(".entity").live("mouseover", function(){
     $(this).children(".callout").show();
@@ -110,44 +121,6 @@ $(document).ready(function(){
   
   $(".entity").live("mouseout", function(){
     $(this).children(".callout").hide();
-  });
-  
-  $(".touchpad").click(function(){
-    console.log("click;");
-    
-    var pos = $(".you").position();
-    obstructingObjects[pos.left/16][pos.top/16] = null;
-    $(".you").stop(true, true);
-    var pad = $(this);
-    if (pad.hasClass("left")){
-      if (pos.left - 16 < 0) return false;
-      if (!obstructed(pos.left-16, pos.top)) $('.you').css('left', pos.left-16);
-    }
-    if (pad.hasClass("top")){
-      if (pos.top - 16 < 0) return false;
-      if (!obstructed(pos.left, pos.top-16)) $('.you').css('top', pos.top-16);
-    }  
-    if (pad.hasClass("right")){
-      if (pos.left + 16 >= $('.map-view').width()) return false;
-      if (!obstructed(pos.left+16, pos.top)) $('.you').css('left', pos.left+16);
-    }  
-    if (pad.hasClass("bottom")){
-      if (pos.top + 16 >= $('.map-view').height()) return false;
-      if (!obstructed(pos.left, pos.top+16)) $('.you').css('top', pos.top+16);
-    }
-    newpos = $(".you").position();
-    obstructingObjects[newpos.left/16][newpos.top/16] = true;
-    
-    if (pos.top != newpos.top || pos.left != newpos.left){
-      updateLocation();
-    }
-    return false;
-    
-    evt.keyCode = evt.which;
-    $(document).trigger(evt);
-    console.log("clock;");
-    
-    return true;
   });
   
   
@@ -159,30 +132,15 @@ $(document).ready(function(){
     }).length != 0) return true;
     
     if (obstructingObjects[x/16][y/16] == null) {
-      var wall = $("<div class='wall' style='top: " + y + "px; left: " + x + "px; background-color:"+UserColor+" ;'></div>");
-      $(".map-view").append(wall);
-      $.post("/edit-wall", {x: x, y: y, type: "create"}, function(data){
-        wall.attr('id', data);
-        console.log("returned wall id: " + data);
-      });
-      console.log("created wall");
-      obstructingObjects[x/16][y/16] = true;
-      
-    } else {      
-      var existing = $(".wall").filter(function(){
-        return ($(this).position().top == y && $(this).position().left == x)
-      });
-      if (UserPower > rgb2power(existing.css("background-color"))) return false;
-      existing.remove();
-      
-      $.post("/edit-wall", {x: x, y: y, wall_id: existing.attr('id'), type: "destroy"});
-      console.log("destroyed wall");
-      obstructingObjects[x/16][y/16] = null;
+      if (clickCreate == "wall") createWall(x,y);
+    } else {   
+      if (clickCreate == "wall") destroyWall(x,y);
     }
   });
 
   $(document).keydown(function(e){
     if (e.keyCode >= LARROW && e.keyCode <= DARROW){
+      humanMsg.removeMsg();
       var pos = $(".you").position();
       obstructingObjects[pos.left/16][pos.top/16] = null;
       $(".you").stop(true, true);
@@ -302,6 +260,29 @@ function distanceTo(entityB){
 
 function obstructed(x,y){
   return (obstructingObjects[x / 16][y / 16] == true)
+}
+
+function createWall(x,y){
+  var wall = $("<div class='wall' style='top: " + y + "px; left: " + x + "px; background-color:"+UserColor+" ;'></div>");
+  $(".map-view").append(wall);
+  $.post("/edit-wall", {x: x, y: y, type: "create"}, function(data){
+    wall.attr('id', data);
+    console.log("returned wall id: " + data);
+  });
+  console.log("created wall");
+  obstructingObjects[x/16][y/16] = true;
+}
+
+function destroyWall(x, y){
+  var existing = $(".wall").filter(function(){
+    return ($(this).position().top == y && $(this).position().left == x)
+  });
+  if (UserPower > rgb2power(existing.css("background-color"))) return false;
+  existing.remove();
+  
+  $.post("/edit-wall", {x: x, y: y, wall_id: existing.attr('id'), type: "destroy"});
+  console.log("destroyed wall");
+  obstructingObjects[x/16][y/16] = null;
 }
 
 function setObstructions(){

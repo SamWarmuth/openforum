@@ -9,4 +9,7 @@ class Wall < CouchRest::ExtendedDocument
   property :date, :default => Proc.new{Time.now.to_i}
   property :power, :default => 1
   
+  property :map_id
+  view_by :map_id
+  
 end

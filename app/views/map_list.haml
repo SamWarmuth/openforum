@@ -1,0 +1,5 @@
+%h1 Choose a Map
+
+-Map.all.each do |map|
+  .map
+    %a{:href => "/m/#{map.id}"}= map.name
