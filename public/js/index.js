@@ -70,7 +70,7 @@ $(document).ready(function(){
     x: 0.5,
     animationCallback: function(x, y)
     {
-      chatDistance = 512*x*x;
+      chatDistance = 512*x*x + 8;
       var ring = $(".reach-ring");
       var you = $(".you")
       var pos = you.position();
@@ -78,9 +78,9 @@ $(document).ready(function(){
       ring.width(chatDistance*2);
       ring.height(chatDistance*2);
       ring.css('border-radius', (chatDistance)+'px');
-      if (x < 0.1){
+      if (x < 0.2){
         $(".red-bar").text("Whisper");
-      } else if ( x < 0.3){
+      } else if ( x < 0.4){
         $(".red-bar").text("Quiet");
       } else if (x < 0.65){
         $(".red-bar").text("Medium");
