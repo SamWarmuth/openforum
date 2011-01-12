@@ -70,6 +70,7 @@ $(document).ready(function(){
   initmap.scrollTop(initloc.top - (initmap.height()/2));
   $('.loading-mask').hide();
   humanMsg.displayMsg('<strong>Welcome to the Metaverse.</strong>');
+  $("#chat-input").focus();
   
   new Dragdealer('distance-slider',
   {
