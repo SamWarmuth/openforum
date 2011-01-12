@@ -42,10 +42,8 @@ if defined?(Scheduler).nil?
   Scheduler = Rufus::Scheduler.start_new
   
   NPC.all.each do |npc|
-    next unless npc.activated
-    Scheduler.every npc.speak_every do
-      npc.speak
-    end
+    next if npc.disabled
+    npc.activate
   end
 end
 

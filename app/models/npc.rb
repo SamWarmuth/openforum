@@ -2,7 +2,7 @@ class NPC < CouchRest::ExtendedDocument
   use_database COUCHDB_SERVER
   
   property :name
-  property :activated, :default => true
+  property :disabled, :default => false
   
   property :date, :default => Proc.new{Time.now.to_i}
   property :color, :default => Proc.new{"#" + (1..3).map{rand(16).to_s(16)}.join}
@@ -22,6 +22,14 @@ class NPC < CouchRest::ExtendedDocument
   
   def location
     Location.get(self.location_id)
+  end
+  
+  def activate
+    Scheduler.every self.speak_every do
+      unless Map.get(self.map_id).users.empty?
+        self.speak
+      end
+    end
   end
   
   def speak

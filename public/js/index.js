@@ -137,6 +137,7 @@ $(document).ready(function(){
     } else {   
       if (clickCreate == "wall") destroyWall(x,y);
     }
+    $("#chat-input").focus();
   });
 
   $(document).keydown(function(e){
@@ -177,12 +178,6 @@ $(document).ready(function(){
       sendMessage(message);
       pulse($(".you"), chatDistance);
       return false;
-    }
-    if (e.keyCode == TKEY){
-      if ($(e.target).hasClass("body")){
-        $("#chat-input").focus();
-        return false;
-      }
     }
     if (e.keyCode == SPACE){
       if ($(e.target).hasClass("body")) return false;
