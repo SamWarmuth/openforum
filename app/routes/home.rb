@@ -18,9 +18,6 @@ class Main
       loc.save
       @user.save
     end
-    
-    
-    
     haml :index
   end
   

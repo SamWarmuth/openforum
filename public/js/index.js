@@ -69,7 +69,7 @@ $(document).ready(function(){
   initmap.scrollLeft(initloc.left - (initmap.width()/2));
   initmap.scrollTop(initloc.top - (initmap.height()/2));
   $('.loading-mask').hide();
-  humanMsg.displayMsg('<strong>Welcome to the Metaverse.</strong>');
+  //humanMsg.displayMsg('<strong>Welcome to the Metaverse.</strong>');
   $("#chat-input").focus();
   
   new Dragdealer('distance-slider',
@@ -216,7 +216,7 @@ function pulse(entity, distance){
 function sendMessage(message){
   var color = $(".you").css('background-color');
   var loc = $(".you").position()
-  addMessage($("#user-name").text(), color, message);
+  addMessage(UserName, color, message);
   $.post("/send-message", {x: loc.left, y: loc.top, content: message, distance: chatDistance});
   
   console.log("You ("+loc.left+":"+loc.top+"): "+message);
