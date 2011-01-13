@@ -4,22 +4,28 @@
     %p
       %img{:src => "/images/ajax-loader.gif"}
 .map-container
+  .birds-eye
+    -@users.each do |user|
+      -location = user.location
+      .pixel{:style => "left: #{location.x/24}px; top: #{location.y/24}px; background: #{user.color}", :id => "p" + user.id}
+    -@walls.each do |wall|
+      .pixel{:id => wall.id, :style => "left: #{wall.x/24}px; top: #{wall.y/24}px; background-color: ##{(9 - wall.power).to_s*3};", :id => "p" + wall.id}
   .map-view
     -location = @user.location
     .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
       .reach-ring{:style => "left: -120px; top: -120px;"}
-    -@map.notes.each do |note|
+    -@notes.each do |note|
       -location = note.location
       .message{:style => "left: #{location.x}px; top: #{location.y}px;", :id => note.id}= note.message
-    -@map.users.find_all{|u| u.id != @user.id}.each do |user|
+    -@users.find_all{|u| u.id != @user.id}.each do |user|
       -location = user.location
       .entity{:style => "left: #{location.x}px; top: #{location.y}px; background: #{user.color}", :id => user.id}
         .callout= user.name
-    -@map.npcs.each do |npc|
+    -@npcs.each do |npc|
       -location = npc.location
       .entity{:style => "left: #{location.x}px; top: #{location.y}px; background: #{npc.color}", :id => npc.id}
         .callout= npc.name
-    -@map.walls.each do |wall|
+    -@walls.each do |wall|
       .wall{:id => wall.id, :style => "left: #{wall.x}px; top: #{wall.y}px; background-color: ##{(9 - wall.power).to_s*3};"}
   
 .chat

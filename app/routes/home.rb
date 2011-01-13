@@ -18,6 +18,10 @@ class Main
       loc.save
       @user.save
     end
+    @users = @map.users
+    @npcs = @map.npcs
+    @notes = @map.notes
+    @walls = @map.walls
     haml :index
   end
   

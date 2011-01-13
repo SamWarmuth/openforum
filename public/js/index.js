@@ -30,7 +30,10 @@ pusher.bind('locationupdate', function(data) {
   entity.data("lastMoved", data.date);
   var pos = entity.position();
   obstructingObjects[pos.left/16][pos.top/16] = null;
-  entity.animate({left: data.xLocation}, 0).animate({top: data.yLocation}, 0);
+  entity.css("left", data.xLocation + "px").css("top", data.yLocation + "px");
+  var pixel = $("#p" + data.entityID);
+  pixel.css("left", data.xLocation/24 + "px").css("top", data.yLocation/24 + "px");
+  
   obstructingObjects[data.xLocation/16][data.yLocation/16] = true;
   
 });
@@ -48,10 +51,13 @@ pusher.bind('message', function(data){
 pusher.bind('editwall', function(data){
   $(".map-view").append(wall);
   if (data.creator_id == UserID) return false
-  if (data.type == "create"){    
-    var wall = $("<div class='wall' style='top: " + data.y + "px; left: " + data.x + "px; background-color: #" + (9 - data.power) + (9 - data.power) + (9 - data.power)+";'></div>").attr("id", data.wall_id);
+  if (data.type == "create"){  
+    var color = "" + (9 - data.power) + (9 - data.power) + (9 - data.power);
+    var wall = $("<div class='wall' style='top: " + data.y + "px; left: " + data.x + "px; background-color: #" +color +";'></div>").attr("id", data.wall_id);
     $(".map-view").append(wall);
     
+    var pixel = $("<div class='pixel' style='top: " + data.y/24 + "px; left: " + data.x/24 + "px; background-color: #" + color+";'></div>")
+    $(".birds-eye").append(pixel);
     obstructingObjects[data.x/16][data.y/16] = true;
     
   } else {
@@ -59,6 +65,7 @@ pusher.bind('editwall', function(data){
     var pos = 
     obstructingObjects[data.x/16][data.y/16] = null;
     $("#"+data.wall_id).remove();
+    $("#p"+data.wall_id).remove();
   }
 });
 
@@ -242,6 +249,9 @@ function updateLocation(){
   map.scrollLeft(loc.left - (map.width()/2));
   map.scrollTop(loc.top - (map.height()/2));
   
+  var pixel = $("#p" + userID);
+  pixel.css("left", loc.left/24 + "px").css("top", loc.top/24 + "px");
+  
   $.post("/update-location", {x: loc.left, y: loc.top, store: store, date: (new Date).getTime()});
 }
 
@@ -261,8 +271,12 @@ function obstructed(x,y){
 function createWall(x,y){
   var wall = $("<div class='wall' style='top: " + y + "px; left: " + x + "px; background-color:"+UserColor+" ;'></div>");
   $(".map-view").append(wall);
+  var pixel = $("<div class='pixel' style='top: " + y/24 + "px; left: " + x/24 + "px; background-color:" + UserColor + ";'></div>")
+  $(".birds-eye").append(pixel);
   $.post("/edit-wall", {x: x, y: y, type: "create"}, function(data){
     wall.attr('id', data);
+    pixel.attr('id', "p" + data);
+    
     console.log("returned wall id: " + data);
   });
   console.log("created wall");
@@ -276,7 +290,10 @@ function destroyWall(x, y){
   if (UserPower > rgb2power(existing.css("background-color"))) return false;
   existing.remove();
   
-  $.post("/edit-wall", {x: x, y: y, wall_id: existing.attr('id'), type: "destroy"});
+  var wallID = existing.attr('id');
+  $("#p"+wallID).remove();
+  
+  $.post("/edit-wall", {x: x, y: y, wall_id: wallID, type: "destroy"});
   console.log("destroyed wall");
   obstructingObjects[x/16][y/16] = null;
 }
