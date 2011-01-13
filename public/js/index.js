@@ -286,7 +286,7 @@ function setObstructions(){
   var mapHeight = $('.map-view').height() / 16;
   for (i = 0; i < obstructingObjects.length; i++) obstructingObjects[i] = new Array(mapHeight);
   
-  $(".entity, .wall").each(function(){
+  $(".entity, .wall, .question").each(function(){
     obstructingObjects[$(this).position().left/16][$(this).position().top/16] = true;
   });
 }

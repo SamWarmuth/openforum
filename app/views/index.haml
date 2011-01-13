@@ -8,7 +8,9 @@
     -location = @user.location
     .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
       .reach-ring{:style => "left: -120px; top: -120px;"}
-      
+    -@map.notes.each do |note|
+      -location = note.location
+      .message{:style => "left: #{location.x}px; top: #{location.y}px;", :id => note.id}= note.message
     -@map.users.find_all{|u| u.id != @user.id}.each do |user|
       -location = user.location
       .entity{:style => "left: #{location.x}px; top: #{location.y}px; background: #{user.color}", :id => user.id}
@@ -36,9 +38,6 @@
       Sign
       %input{:type => "radio", :value => "none", :name => "create"}
       Nothing
-    
-    
-    
     .settings-tab
   
   

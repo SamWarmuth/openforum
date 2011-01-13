@@ -323,20 +323,33 @@ img
   -webkit-border-radius: 8px
   -moz-border-radius: 8px
   border-radius: 8px
-  .callout
-    font-size: 0.75em
-    position: absolute
-    top: 20px
-    left: -46px
-    padding: 5px
-    background: black
-    border-radius: 5px
-    opacity: 0.85
-    color: white
-    width: 100px
-    text-align: center
-    display: none
-    z-index: 999
+  z-index: 100
+.callout
+  font-size: 0.75em
+  position: absolute
+  top: 20px
+  left: -46px
+  padding: 5px
+  background: black
+  border-radius: 5px
+  opacity: 0.85
+  color: white
+  width: 100px
+  text-align: center
+  display: none
+  z-index: 999
+.message
+  font-size: 1.1em
+  position: absolute
+  top: 0px
+  left: 0px
+  padding: 5px
+  background: black
+  border-radius: 3px
+  opacity: 0.5
+  color: white
+  text-align: center
+  z-index: 0
 .reach-ring
   position: absolute
   width: 252px
@@ -360,6 +373,13 @@ img
   height: 16px
   background: black
   z-index: 250
+.question
+  position: absolute
+  width: 16px
+  height: 16px
+  background: url("/images/question.png")
+  z-index: 250
+  cursor: pointer
 .touchpad
   display: inline-block
   width: 20%
