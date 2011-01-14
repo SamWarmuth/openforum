@@ -27,7 +27,8 @@ end
 couchdb_url = monk_settings(:couchdb)[:url]
 COUCHDB_SERVER = CouchRest.database!(couchdb_url)
 $cached_users = {}
-
+$locations = {}
+$walls = {}
 # Pusher Creds
 Pusher.app_id = '3520'
 Pusher.key = '834b3ca0e7e453c73863'

@@ -1,22 +1,26 @@
+.hidey-hole
+  -@walls.each do |wall|
+    .hide{:style => "display: none"}= wall.id
 .loading-mask
   .loading-box
     Loading
     %p
       %img{:src => "/images/ajax-loader.gif"}
+
 .map-container
   .birds-eye
     -@users.each do |user|
       -location = user.location
       .pixel{:style => "left: #{location.x/24}px; top: #{location.y/24}px; background: #{user.color}", :id => "p" + user.id}
     -@walls.each do |wall|
-      .pixel{:id => wall.id, :style => "left: #{wall.x/24}px; top: #{wall.y/24}px; background-color: ##{(9 - wall.power).to_s*3};", :id => "p" + wall.id}
+      .pixel{:style => "left: #{wall.x/24}px; top: #{wall.y/24}px; background-color: ##{(9 - wall.power).to_s*3};", :id => "p" + wall.id}
   .map-view
     -location = @user.location
     .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
       .reach-ring{:style => "left: -120px; top: -120px;"}
     -@notes.each do |note|
       -location = note.location
-      .message{:style => "left: #{location.x}px; top: #{location.y}px;", :id => note.id}= note.message
+      .note{:style => "left: #{location.x}px; top: #{location.y}px;", :id => note.id}= note.message
     -@users.find_all{|u| u.id != @user.id}.each do |user|
       -location = user.location
       .entity{:style => "left: #{location.x}px; top: #{location.y}px; background: #{user.color}", :id => user.id}
@@ -27,6 +31,7 @@
         .callout= npc.name
     -@walls.each do |wall|
       .wall{:id => wall.id, :style => "left: #{wall.x}px; top: #{wall.y}px; background-color: ##{(9 - wall.power).to_s*3};"}
+      
   
 .chat
   #tabs-1.message-list
@@ -36,14 +41,7 @@
   %input#chat-input{:type => "text"}
   #dragdealer
   .settings
-    Click Creates:
-    .radios{:style => "margin-left: 10px;"}
-      %input{:type => "radio", :name => "create", :value => "wall", :checked => "checked"}
-      Wall
-      %input{:type => "radio", :value => "sign", :name => "create"}
-      Sign
-      %input{:type => "radio", :value => "none", :name => "create"}
-      Nothing
+    Sorry, no settings yet. Working on it. Eventually this will allow you to change profile, color, etc.
     .settings-tab
   
   

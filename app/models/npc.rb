@@ -21,7 +21,7 @@ class NPC < CouchRest::ExtendedDocument
   
   
   def location
-    Location.get(self.location_id)
+    $locations[self.id] ||= Location.get(self.location_id)
   end
   
   def activate

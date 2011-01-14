@@ -21,6 +21,7 @@ class Main
     @users = @map.users
     @npcs = @map.npcs
     @notes = @map.notes
+    
     @walls = @map.walls
     haml :index
   end
@@ -158,6 +159,7 @@ class Main
       wall.map_id = @user.map_id
       wall.save
       wall_id = wall.id
+      $walls[wall.map_id] << wall
       #see comment below
     else
       wall = Wall.get(params[:wall_id])
@@ -167,6 +169,8 @@ class Main
       wall_id = wall.id
       wall.destroy
       #need to save the id before destruction, as it is removed.
+      $walls[wall.map_id].delete_if{|w| w.id = wall.id}
+      
     end
     
     

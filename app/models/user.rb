@@ -30,7 +30,7 @@ class User < CouchRest::ExtendedDocument
   property :location_id
   
   def location
-    Location.get(self.location_id)
+    $locations[self.id] ||= Location.get(self.location_id)
   end
   
 end
