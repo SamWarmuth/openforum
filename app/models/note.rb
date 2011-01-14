@@ -16,7 +16,8 @@ class Note < CouchRest::ExtendedDocument
   property :distance, :default => 128
   
   
-  def location
+  def location(reset=false)
+    $locations[self.id] = nil if reset
     $locations[self.id] ||= Location.get(self.location_id)
   end
   
