@@ -7,7 +7,7 @@ class Map < CouchRest::ExtendedDocument
   property :spawn_points, :default => [[128,128]], :cast_as => ['Array']
   
   def walls
-    Wall.by_map_id(:key => self.id)
+    $walls[self.id] ||= Wall.by_map_id(:key => self.id)
   end
   def users
     User.by_map_id(:key => self.id)

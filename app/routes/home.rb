@@ -159,7 +159,7 @@ class Main
       wall.map_id = @user.map_id
       wall.save
       wall_id = wall.id
-      $walls[wall.map_id] << wall
+      $walls[wall.map_id] << wall unless $walls[wall.map_id].nil?
       #see comment below
     else
       wall = Wall.get(params[:wall_id])
@@ -169,7 +169,7 @@ class Main
       wall_id = wall.id
       wall.destroy
       #need to save the id before destruction, as it is removed.
-      $walls[wall.map_id].delete_if{|w| w.id = wall.id}
+      $walls[wall.map_id].delete_if{|w| w.id == wall_id} unless $walls[wall.map_id].nil?
       
     end
     
