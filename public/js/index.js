@@ -49,32 +49,53 @@ pusher.bind('message', function(data){
 });
 
 pusher.bind('editwall', function(data){
-  $(".map-view").append(wall);
   if (data.creator_id == UserID) return false
   if (data.type == "create"){  
     var color = "" + (9 - data.power) + (9 - data.power) + (9 - data.power);
     var wall = $("<div class='wall' style='top: " + data.y + "px; left: " + data.x + "px; background-color: #" +color +";'></div>").attr("id", data.wall_id);
     $(".map-view").append(wall);
     
-    var pixel = $("<div class='pixel' style='top: " + data.y/24 + "px; left: " + data.x/24 + "px; background-color: #" + color+";'></div>")
+    var pixel = $("<div class='pixel' style='top: " + data.y/24 + "px; left: " + data.x/24 + "px; background-color: #" + color+";'></div>").attr("id", "p" + data.wall_id);
     $(".birds-eye").append(pixel);
     obstructingObjects[data.x/16][data.y/16] = true;
     
   } else {
     console.log("removing " + data.wall_id + ".");
-    var pos = 
     obstructingObjects[data.x/16][data.y/16] = null;
     $("#"+data.wall_id).remove();
     $("#p"+data.wall_id).remove();
   }
 });
 
+var poo;
+
+pusher.bind('edituser', function(data){
+  if (data.user_id == UserID) return false
+  if (data.type == "create"){  
+    var entity = $("<div class='entity' style='display: none; top: " + data.y + "px; left: " + data.x + "px; background-color: "+ data.color + ";'></div>").attr("id", data.user_id);
+    $(".map-view").append(entity);
+    entity.fadeIn(500);
+    
+    var pixel = $("<div class='pixel' style='top: " + data.y/24 + "px; left: " + data.x/24 + "px; background-color: " + data.color + ";'></div>").attr("id", "p" + data.user_id);
+    $(".birds-eye").append(pixel);
+    obstructingObjects[data.x/16][data.y/16] = true;
+  } else {
+    console.log("removing " + data.user_id + ".");
+    entity = $("#" + data.user_id);
+    var pos = entity.position();
+    poo = pos;
+    obstructingObjects[pos.left/16][pos.top/16] = null;
+    entity.fadeOut(300, function(){
+      entity.remove();
+    });
+    $("#p"+data.user_id).remove();
+  }
+});
+
 
 $(document).ready(function(){
-  var initloc = $(".you").position()
-  var initmap = $(".map-container");
-  initmap.scrollLeft(initloc.left - (initmap.width()/2));
-  initmap.scrollTop(initloc.top - (initmap.height()/2));
+  updateViewport();
+  
   $('.loading-mask').hide();
   //humanMsg.displayMsg('<strong>Welcome to the Metaverse.</strong>');
   $("#chat-input").focus();
@@ -238,6 +259,29 @@ function addMessage(sender, color, content){
   return true;
 }
 
+function updateViewport(){
+  loc = $(".you").position()
+  var map = $(".map-container");
+  var mapWidth = map.width();
+  var mapHeight = map.height();
+  var leftSide = loc.left - (mapWidth/2);
+  var topSide = loc.top - (mapHeight/2);
+  if (leftSide < 0) leftSide = 0;
+  if (topSide < 0) topSide = 0;
+  var totalWidth = $(".map-view").width();
+  var totalHeight = $(".map-view").height();
+  
+  if (leftSide + mapWidth > totalWidth) leftSide = totalWidth - mapWidth;
+  if (topSide + mapHeight > totalHeight) topSide = totalHeight - mapHeight;
+  
+  map.scrollLeft(leftSide);
+  map.scrollTop(topSide);
+  $(".location-box").css("width", (mapWidth/24)+"px").css("height", (mapHeight/24)+"px").css("left", (leftSide/24 - 1)+"px").css("top", (topSide/24 - 1)+"px")
+  
+  var pixel = $("#p" + userID);
+  pixel.css("left", loc.left/24 + "px").css("top", loc.top/24 + "px");
+}
+
 locationCount = 0
 function updateLocation(){
   //send message to server with current map location
@@ -245,13 +289,7 @@ function updateLocation(){
   var store = "false";
   if (locationCount % 10 == 0) store = "true"
   loc = $(".you").position()
-  var map = $(".map-container");
-  map.scrollLeft(loc.left - (map.width()/2));
-  map.scrollTop(loc.top - (map.height()/2));
-  
-  var pixel = $("#p" + userID);
-  pixel.css("left", loc.left/24 + "px").css("top", loc.top/24 + "px");
-  
+  updateViewport();
   $.post("/update-location", {x: loc.left, y: loc.top, store: store, date: (new Date).getTime()});
 }
 

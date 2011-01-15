@@ -15,6 +15,7 @@ class User < CouchRest::ExtendedDocument
     self.password_hash = (Digest::SHA2.new(512) << (self.salt + password + "thyuhwdhlbajhrqmdwxgayegpjxjdomaj")).to_s
   end
   
+  
   def valid_password?(password)
     return false if (self.password_hash.nil? || self.salt.nil?)
     return ((Digest::SHA2.new(512) << (self.salt + password + "thyuhwdhlbajhrqmdwxgayegpjxjdomaj")).to_s == password_hash)
@@ -27,10 +28,20 @@ class User < CouchRest::ExtendedDocument
   property :map_id
   view_by :map_id
   
-  property :location_id
+  property :location_ids, :default => {}
   
   def location
-    $locations[self.id] ||= Location.get(self.location_id)
+    $locations[self.id] ||= {}
+    $locations[self.id][self.map_id] ||= Location.get(self.location_ids[self.map_id])
+    if $locations[self.id][self.map_id].nil?
+      loc = Location.new
+      loc.save
+      self.location_ids[self.map_id] = loc.id
+      self.save
+      puts "reset location for this map/user"
+      $locations[self.id][self.map_id] = loc
+    end
+    $locations[self.id][self.map_id]
   end
   
 end

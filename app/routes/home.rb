@@ -12,11 +12,15 @@ class Main
     redirect "/404" if @map.nil?
     
     if @user.map_id != @map.id
+      Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id, :type => "destroy"}.to_json)
       @user.map_id = @map.id
       loc = @user.location
-      loc.x, loc.y = @map.spawn_points.first
-      loc.save
       @user.save
+      Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id,
+                                                  :type => "create",
+                                                  :x => loc.x,
+                                                  :y => loc.y,
+                                                  :color => @user.color}.to_json)
     end
     @users = @map.users
     @npcs = @map.npcs
@@ -114,9 +118,11 @@ class Main
     
     if params[:store] == "true"
       location = @user.location
+      puts "trying to store to #{location.id}"
       location.x = x
       location.y = y
       location.save
+      $locations[@user.id][@user.map_id] = nil
     end
     
     return 200

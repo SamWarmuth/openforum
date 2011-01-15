@@ -14,6 +14,7 @@
       .pixel{:style => "left: #{location.x/24}px; top: #{location.y/24}px; background: #{user.color}", :id => "p" + user.id}
     -@walls.each do |wall|
       .pixel{:style => "left: #{wall.x/24}px; top: #{wall.y/24}px; background-color: ##{(9 - wall.power).to_s*3};", :id => "p" + wall.id}
+    .location-box
   .map-view
     -location = @user.location
     .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
