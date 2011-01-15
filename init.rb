@@ -46,6 +46,9 @@ if defined?(Scheduler).nil?
     next if npc.disabled
     npc.activate
   end
+  Scheduler.every "1m" do
+    #update user list
+  end
 end
 
 

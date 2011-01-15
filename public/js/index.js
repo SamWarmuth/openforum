@@ -197,6 +197,7 @@ $(document).ready(function(){
       if (pos.top != newpos.top || pos.left != newpos.left){
         updateLocation();
       }
+      $("#chat-input").focus();
       return false;
     }
     if (e.keyCode == ENTER){

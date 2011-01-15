@@ -2,8 +2,11 @@ class Main
   before do headers "Content-Type" => "text/html; charset=utf-8" end
   
   get "/" do
-    redirect "/login" unless logged_in?
-    haml :map_list
+    if logged_in?
+      haml :map_list
+    else
+      haml :welcome
+    end
   end
   
   get "/m/:map_id" do

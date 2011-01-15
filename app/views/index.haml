@@ -1,3 +1,4 @@
+
 .hidey-hole
   -@walls.each do |wall|
     .hide{:style => "display: none"}= wall.id
@@ -16,9 +17,13 @@
       .pixel{:style => "left: #{wall.x/24}px; top: #{wall.y/24}px; background-color: ##{(9 - wall.power).to_s*3};", :id => "p" + wall.id}
     .location-box
   .map-view
-    -location = @user.location
-    .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
-      .reach-ring{:style => "left: -120px; top: -120px;"}
+    -if @user.nil?
+      .new-user-form
+        Hi there, you're new!
+    -else
+      -location = @user.location
+      .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
+        .reach-ring{:style => "left: -120px; top: -120px;"}
     -@notes.each do |note|
       -location = note.location
       .note{:style => "left: #{location.x}px; top: #{location.y}px;", :id => note.id}= note.message
@@ -45,5 +50,9 @@
     Sorry, no settings yet. Working on it. Eventually this will allow you to change profile, color, etc.
     .settings-tab
   
-  
+:javascript
+  window.mapID = '#{@user.map_id}';
+  window.userID = '#{@user.id}';
+  window.userName = '#{@user.name}';
+#user-power{:style => "display: none; background-color: ##{(9 - @user.power).to_s*3}"}
 %script{:src => "/js/index.js", :type => "text/javascript"}
