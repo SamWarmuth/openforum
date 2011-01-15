@@ -14,8 +14,8 @@ class Main
     if @user.map_id != @map.id
       Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id, :type => "destroy"}.to_json)
       @user.map_id = @map.id
-      loc = @user.location
       @user.save
+      loc = @user.location
       Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id,
                                                   :type => "create",
                                                   :x => loc.x,
