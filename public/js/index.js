@@ -88,6 +88,8 @@ pusher.bind('edituser', function(data){
       entity.remove();
     });
     $("#p"+data.user_id).remove();
+    addStatus("<b>"+data.name + "</b> has left this forum.");
+    
   }
 });
 
@@ -227,6 +229,10 @@ $(document).ready(function(){
     setAccountDetails(name, email, password);
     $(".new-user-signup").hide();
     $(".new-user-signup-overlay").hide();
+  });
+  
+  $(window).unload( function () { 
+    $.ajax({url:"/leave-room", async:false})
   });
 });
 

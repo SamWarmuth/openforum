@@ -110,6 +110,14 @@ class Main
     @user.save
   end
   
+  get "/leave-room" do
+    return 403 unless logged_in?
+    
+    Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id, :name => @user.name, :type => "destroy"}.to_json)
+    @user.map_id = nil
+    @user.save
+  end
+  
   post "/update-location" do
     return 403 unless logged_in?
     return 400 if (params[:x].empty? || params[:y].empty?)
