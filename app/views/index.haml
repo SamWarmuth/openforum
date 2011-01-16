@@ -7,7 +7,30 @@
     Loading
     %p
       %img{:src => "/images/ajax-loader.gif"}
-
+-if @new_user
+  .new-user-signup-overlay
+  .new-user-signup
+    %img{:style => "display: block; margin: 10px auto 30px auto; width: 184px; height: 27px;", :src => "/images/logo.png"}
+    %p Pick a nickname, or use the one we generated for you:
+    .row
+      %input.new-name.input{:type => 'text', :value => @user.name}
+      .button-holder{:style => "position: relative; top: -5px; display: inline-block;"}
+        .just-name.awesome.green.large{:style => "display: inline-block"} Enter the Forum
+    %br
+    %p If you'd like to create a permanent account, just enter your email and password below.
+    .row
+      %label.label Email
+      %input.input.email{:type => 'text'}
+    .row
+      %label.label Password
+      %input.input.password{:type => 'password'}
+    .row
+      .permanent.awesome.green.giant Create Account & Enter the Forum
+    .row
+      %br
+      Already have an account?
+      %a{:href => "/login"} Log In
+    
 .map-container
   .birds-eye
     -@users.each do |user|

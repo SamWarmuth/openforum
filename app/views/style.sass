@@ -1,5 +1,8 @@
 /* CSS Mini Reset http://www.vcarrer.com/2010/05/css-mini-reset.html */
 
+*
+  font-family: Helvetica, Arial, Sans-serif
+
 html, body, div, form, fieldset, legend, label
   margin: 0
   padding: 0
@@ -62,18 +65,18 @@ img
     font-family: helvetica, arial, sans-serif
     font-weight: bold
     margin: 25px auto 30px auto
-  .row
-    text-align: center
-    margin-bottom: 20px
-    .label
-      text-align: right
-      font-size: 1.4em
-      display: inline-block
-      width: 125px
-      margin-right: 10px
-    .input
-      width: 300px
-      font-size: 1.5em
+.row
+  text-align: center
+  margin-bottom: 20px
+  .label
+    text-align: right
+    font-size: 1.4em
+    display: inline-block
+    width: 125px
+    margin-right: 10px
+  .input
+    width: 300px
+    font-size: 1.5em
 
 .humanMsg 
   font: normal 20px/50px Helvetica, Arial, Sans-Serif
@@ -308,10 +311,40 @@ img
   -moz-border-radius: 3px
   -webkit-border: 3px
   border-radius: 3px
+
+
+
+.paper
+  width: 550px
+  margin: 30px auto
+  padding: 40px 80px
+  background: #fff  url(/images/texture.png)
+  -webkit-box-shadow: 2px 2px 5px #333
+  box-shadow: 2px 2px 5px #333
+  border-radius: 2px
     
     
-    
-    
+.new-user-signup-overlay
+  position: absolute
+  left: 0
+  top: 0
+  width: 100%
+  height: 100%
+  background: #000
+  opacity: 0.6
+  z-index: 9999
+.new-user-signup
+  position: absolute
+  left: 50%
+  top: 30px
+  width: 450px
+  margin-left: -250px
+  background: #fff
+  border: 2px solid #ccc
+  z-index: 10000
+  min-height: 250px
+  border-radius: 5px
+  padding: 20px
     
     
     
@@ -408,7 +441,7 @@ img
 .map-container
   width: 75%
   height: 100%
-  overflow: scroll
+  overflow: hidden
   float: left
   background: #222
   position: relative
@@ -423,8 +456,8 @@ img
   width: 85.5px
   height: 85.5px
   position: fixed
-  bottom: 28px
-  right: 30%
+  bottom: 15px
+  right: 26%
   z-index: 500
   background: white
   border: 2px solid #999

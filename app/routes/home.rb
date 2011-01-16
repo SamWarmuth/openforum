@@ -2,15 +2,18 @@ class Main
   before do headers "Content-Type" => "text/html; charset=utf-8" end
   
   get "/" do
-    if logged_in?
-      haml :map_list
-    else
-      haml :welcome
-    end
+    haml :welcome, :layout => false
   end
   
   get "/m/:map_id" do
-    redirect "/login" unless logged_in?
+    if logged_in? == false
+      @new_user = true
+      @user = User.new
+      @user.name = generate_roman_name
+      @user.save
+      set_cookies
+    end
+    
     @map = Map.get(params[:map_id])
     redirect "/404" if @map.nil?
     
@@ -21,6 +24,7 @@ class Main
       loc = @user.location
       Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id,
                                                   :type => "create",
+                                                  :name => @user.name,
                                                   :x => loc.x,
                                                   :y => loc.y,
                                                   :color => @user.color}.to_json)
@@ -43,26 +47,9 @@ class Main
   end
 
   post "/login" do
-    user = User.all.find{|u| u.email == params[:email].downcase}
-    if user && user.valid_password?(params[:password])
-      user.challenges ||= []
-      user.challenges = user.challenges[0...4]
-      user.challenges.unshift((Digest::SHA2.new(512) << (64.times.map{|l|('a'..'z').to_a[rand(25)]}.join)).to_s)
-      user.save
-      $cached_users[user.id] = nil
-      
-      response.set_cookie("user", {
-        :path => "/",
-        :expires => Time.now + 2**20, #two weeks
-        :httponly => true,
-        :value => user.id
-      })
-      response.set_cookie("user_challenge", {
-        :path => "/",
-        :expires => Time.now + 2**20,
-        :httponly => true,
-        :value => user.challenges.first
-      })
+    @user = User.all.find{|u| u.email == params[:email].downcase}
+    if @user && @user.valid_password?(params[:password])
+      set_cookies
       redirect "/"
     else
       redirect "/login?error=incorrect"
@@ -104,6 +91,23 @@ class Main
     user.set_password(params[:password])
     user.save
     redirect "/login?success=created"
+  end
+  
+  post "/change-name" do
+    return 403 unless logged_in?
+    return 400 if params[:name].empty?
+    @user.name = params[:name]
+    @user.save
+  end
+  
+  post "/set-account-details" do
+    return 403 unless logged_in?
+    return false unless @user.password_hash.nil?
+    return 400 if (params[:name].empty? || params[:email].empty? || params[:password].empty?)
+    @user.name = params[:name]
+    @user.email = params[:email]
+    @user.set_password(params[:password])
+    @user.save
   end
   
   post "/update-location" do

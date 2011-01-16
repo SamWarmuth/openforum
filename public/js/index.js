@@ -67,23 +67,22 @@ pusher.bind('editwall', function(data){
   }
 });
 
-var poo;
 
 pusher.bind('edituser', function(data){
   if (data.user_id == UserID) return false
   if (data.type == "create"){  
-    var entity = $("<div class='entity' style='display: none; top: " + data.y + "px; left: " + data.x + "px; background-color: "+ data.color + ";'></div>").attr("id", data.user_id);
+    var entity = $("<div class='entity' style='display: none; top: " + data.y + "px; left: " + data.x + "px; background-color: "+ data.color + ";'><div class='callout'>" + data.name + "</div></div>").attr("id", data.user_id);
     $(".map-view").append(entity);
     entity.fadeIn(500);
     
     var pixel = $("<div class='pixel' style='top: " + data.y/24 + "px; left: " + data.x/24 + "px; background-color: " + data.color + ";'></div>").attr("id", "p" + data.user_id);
     $(".birds-eye").append(pixel);
     obstructingObjects[data.x/16][data.y/16] = true;
+    addStatus("<b>"+data.name + "</b> has entered this forum.");
   } else {
     console.log("removing " + data.user_id + ".");
     entity = $("#" + data.user_id);
     var pos = entity.position();
-    poo = pos;
     obstructingObjects[pos.left/16][pos.top/16] = null;
     entity.fadeOut(300, function(){
       entity.remove();
@@ -215,7 +214,31 @@ $(document).ready(function(){
   $(document).keyup(function(e){
     $(".you").stop();
   });
+  
+  $(".just-name").click(function(){
+    changeName($(".new-name").val());
+    $(".new-user-signup").hide();
+    $(".new-user-signup-overlay").hide();
+  });
+  $(".permanent").click(function(){
+    var name = $(".new-name").val();
+    var email = $(".email").val();
+    var password = $(".password").val();
+    setAccountDetails(name, email, password);
+    $(".new-user-signup").hide();
+    $(".new-user-signup-overlay").hide();
+  });
 });
+
+function changeName(name){
+  userName = name;
+  $.post("/change-name", {name: name});
+}
+
+function setAccountDetails(name, email, password){
+  userName = name;
+  $.post("/set-account-details", {name: name, email: email, password: password});
+}
 
 function glow(){
   $(".you").animate({opacity: 0.5}, 50).animate({opacity: 1}, 50);
@@ -249,6 +272,11 @@ function sendMessage(message){
   $.post("/send-message", {x: loc.left, y: loc.top, content: message, distance: chatDistance});
   
   console.log("You ("+loc.left+":"+loc.top+"): "+message);
+}
+
+function addStatus(content){
+  var status = $("<div class='message'><em>" + content + "</em></div>");
+  status.appendTo(".message-list");
 }
 
 function addMessage(sender, color, content){

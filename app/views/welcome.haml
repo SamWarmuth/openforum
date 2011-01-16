@@ -1,6 +1,26 @@
-This is the page where all the stuff goes.
-Create a new user!
-UserName ___________
-Password ___________
-
-go!
+!!!
+%head
+  %title Metaverse
+  %link{:href => "/css/style.css", :media => "all", :rel => "stylesheet", :type => "text/css"}
+  %script{:src => "/js/jquery-1.4.2.min.js", :type => "text/javascript"}
+  %script{:src => "/js/jquery-ui-1.8.7.custom.min.js", :type => "text/javascript"}
+  %script{:src => "/js/dragdealer.js", :type => "text/javascript"}
+  %script{:src => "/js/humanmsg.js", :type => "text/javascript"}
+  
+  %script{:src => "http://js.pusherapp.com/1.6/pusher.min.js", :type => "text/javascript"}
+%body.body{:style => "background-color: #eee"}
+  .paper
+    %img{:style => "display: block; margin: 0 auto 30px auto; width: 368px; height: 54px;", :src => "/images/logo.png"}
+    This is the page where all the stuff goes.
+    Create a new user!
+    UserName ___________
+    Password ___________
+    
+    go!
+    
+    .recent-maps
+      %h1 Maps
+      
+      -Map.all.each do |map|
+        .map{:style => "padding: 10px;"}
+          %a{:href => "/m/#{map.id}", :style => "font-size: 1.2em;"}= map.name
