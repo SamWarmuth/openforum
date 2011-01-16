@@ -98,7 +98,7 @@ $(document).ready(function(){
   updateViewport();
   
   $('.loading-mask').hide();
-  //humanMsg.displayMsg('<strong>Welcome to the Metaverse.</strong>');
+  //humanMsg.displayMsg('<strong>Welcome to the Open Forum.</strong>');
   $("#chat-input").focus();
   
   new Dragdealer('distance-slider',
