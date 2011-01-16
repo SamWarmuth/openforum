@@ -10,17 +10,18 @@
   %script{:src => "http://js.pusherapp.com/1.6/pusher.min.js", :type => "text/javascript"}
 %body.body{:style => "background-color: #eee"}
   .paper
+    -if @user
+      .username{:style => "position: absolute; top: 10px; right: 10px;color: #888; font-size: 0.8em;"} You're logged in as #{@user.name}
     %img{:style => "display: block; margin: 0 auto 30px auto; width: 368px; height: 54px;", :src => "/images/logo.png"}
-    This is the page where all the stuff goes.
-    Create a new user!
-    UserName ___________
-    Password ___________
-    
-    go!
-    
+    Open forum is a work in progess.
+
     .recent-maps
       %h1 Maps
-      
-      -Map.all.each do |map|
-        .map{:style => "padding: 10px;"}
-          %a{:href => "/m/#{map.id}", :style => "font-size: 1.2em;"}= map.name
+      .indent{:style => "margin-left: 25px"}
+        -Map.all.each do |map|
+          .map{:style => "padding: 10px;"}
+            %a{:href => "/m/#{map.id}", :style => "font-size: 1.2em;"}= map.name
+            -user_count = map.users.count
+            (#{user_count} user#{"s" unless user_count == 1})
+    .cpy{:style => "text-align: center; color: #888; font-size: 0.8em; margin-top: 80px"}
+      Copyright 2011 Sam Warmuth
