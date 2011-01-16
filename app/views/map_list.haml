@@ -1,6 +1,0 @@
-.page{:style => "width: 400px; margin: auto; background: #ddd; padding: 10px;"}
-  %h1 Choose a Map
-
-  -Map.all.each do |map|
-    .map{:style => "padding: 10px;"}
-      %a{:href => "/m/#{map.id}", :style => "font-size: 1.2em;"}= map.name

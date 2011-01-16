@@ -325,7 +325,7 @@ function updateLocation(){
   if (locationCount % 10 == 0) store = "true"
   loc = $(".you").position()
   updateViewport();
-  $.post("/update-location", {x: loc.left, y: loc.top, store: store, date: (new Date).getTime()});
+  $.post("/update-location", {x: loc.left, y: loc.top, store: store, date: (new Date).getTime(), map: mapID});
 }
 
 function distanceTo(entityB){
