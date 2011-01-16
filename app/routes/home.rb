@@ -58,6 +58,8 @@ class Main
   end
   
   get "/logout" do
+    @user.map_id = nil
+    @user.save
     response.set_cookie("user", {
       :path => "/",
       :expires => Time.now + 2**20,
@@ -99,6 +101,7 @@ class Main
     return 400 if params[:name].empty?
     @user.name = params[:name]
     @user.save
+    #push name change to users
   end
   
   post "/set-account-details" do
@@ -109,6 +112,7 @@ class Main
     @user.email = params[:email]
     @user.set_password(params[:password])
     @user.save
+    #push name change to users
   end
   
   get "/leave-room" do

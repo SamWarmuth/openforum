@@ -40,6 +40,8 @@
       .pixel{:style => "left: #{wall.x/24}px; top: #{wall.y/24}px; background-color: ##{(9 - wall.power).to_s*3};", :id => "p" + wall.id}
     .location-box
   .map-view
+    .logo
+      %img{:style => "width: 184px; height: 27px;", :src => "/images/logo.png"}
     -if @user.nil?
       .new-user-form
         Hi there, you're new!

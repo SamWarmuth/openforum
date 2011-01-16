@@ -239,6 +239,7 @@ $(document).ready(function(){
 function changeName(name){
   userName = name;
   $.post("/change-name", {name: name});
+  return true;
 }
 
 function setAccountDetails(name, email, password){
