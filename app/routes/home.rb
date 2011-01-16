@@ -138,7 +138,6 @@ class Main
     
     if params[:store] == "true"
       location = @user.location
-      puts "trying to store to #{location.id}"
       location.x = x
       location.y = y
       location.save
