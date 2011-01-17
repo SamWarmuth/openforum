@@ -18,4 +18,7 @@ class Map < CouchRest::ExtendedDocument
   def notes
     Note.by_map_id(:key => self.id)
   end
+  def teleporters
+    Teleporter.by_map_id(:key => self.id)
+  end
 end

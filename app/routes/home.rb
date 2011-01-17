@@ -19,7 +19,7 @@ class Main
     redirect "/404" if @map.nil?
     
     if @user.map_id != @map.id
-      Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id, :type => "destroy"}.to_json)
+      Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id, :name => @user.name, :type => "destroy"}.to_json)
       @user.map_id = @map.id
       @user.save
       loc = @user.location
@@ -33,7 +33,7 @@ class Main
     @users = @map.users
     @npcs = @map.npcs
     @notes = @map.notes
-    
+    @teleporters = @map.teleporters
     @walls = @map.walls
     haml :index
   end
@@ -113,6 +113,15 @@ class Main
     @user.set_password(params[:password])
     @user.save
     #push name change to users
+  end
+  
+  post "/teleport" do
+    return 403 unless logged_in?
+    return 400 if params[:tele_id].empty?
+    teleporter = Teleporter.get(params[:tele_id])
+    return 404 if teleporter.nil?
+    return 404 if teleporter.destination_id.nil?
+    return "/m/#{teleporter.destination_id}"
   end
   
   get "/leave-room" do
@@ -200,6 +209,7 @@ class Main
       $walls[wall.map_id] << wall unless $walls[wall.map_id].nil?
       #see comment below
     else
+      return 400 if (params[:wall_id].nil? || params[:wall_id].empty?)
       wall = Wall.get(params[:wall_id])
       return 404 if wall.nil?
       

@@ -198,6 +198,15 @@ $(document).ready(function(){
       if (pos.top != newpos.top || pos.left != newpos.left){
         updateLocation();
       }
+      var teles = $(".teleporter").filter(function(){
+        return ($(this).position().top == newpos.top && $(this).position().left == newpos.left)
+      });
+      if (teles.length != 0){
+        $.post("/teleport", {tele_id: teles.first().attr('id')}, function(url){
+          window.location = url;
+        });
+      }
+      
       $("#chat-input").focus();
       return false;
     }
