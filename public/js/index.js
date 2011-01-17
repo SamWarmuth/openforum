@@ -202,9 +202,7 @@ $(document).ready(function(){
         return ($(this).position().top == newpos.top && $(this).position().left == newpos.left)
       });
       if (teles.length != 0){
-        $.post("/teleport", {tele_id: teles.first().attr('id')}, function(url){
-          window.location = url;
-        });
+        teleport( teles.first().attr('id') );
       }
       
       $("#chat-input").focus();
@@ -244,6 +242,17 @@ $(document).ready(function(){
     $.ajax({url:"/leave-room", data: {map_id: mapID}, async:false})
   });
 });
+
+function teleport(teleporterID){
+  entity = $("#"+userID);
+  entity.fadeOut(300, function(){
+    entity.remove();
+  });
+  
+  $.post("/teleport", {tele_id: teleporterID}, function(url){
+    window.location = url;
+  });
+}
 
 function changeName(name){
   userName = name;
