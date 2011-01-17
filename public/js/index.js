@@ -70,7 +70,8 @@ pusher.bind('editwall', function(data){
 
 pusher.bind('edituser', function(data){
   if (data.user_id == UserID) return false
-  if (data.type == "create"){  
+  if (data.type == "create"){
+    $("#"+data.user_id).remove();  
     var entity = $("<div class='entity' style='display: none; top: " + data.y + "px; left: " + data.x + "px; background-color: "+ data.color + ";'><div class='callout'>" + data.name + "</div></div>").attr("id", data.user_id);
     $(".map-view").append(entity);
     entity.fadeIn(500);
