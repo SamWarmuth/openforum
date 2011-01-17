@@ -241,7 +241,7 @@ $(document).ready(function(){
   });
   
   $(window).unload( function () { 
-    $.ajax({url:"/leave-room", async:false})
+    $.ajax({url:"/leave-room", data: {map_id: mapID}, async:false})
   });
 });
 

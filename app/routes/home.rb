@@ -137,10 +137,12 @@ class Main
   
   get "/leave-room" do
     return 403 unless logged_in?
+    return 202 if @user.map_id != params[:map_id]
     map_id = @user.map_id
     @user.map_id = nil
     @user.save
     Pusher[map_id].trigger_async('edituser', {:user_id => @user.id, :name => @user.name, :type => "destroy"}.to_json)
+    return 200
   end
   
   post "/update-location" do
@@ -187,6 +189,8 @@ class Main
     message.content = params[:content]
     message.x_location = params[:x].to_i
     message.y_location = params[:y].to_i
+    message.distance = params[:distance].to_i
+    message.user_id = @user.id
     message.map_id = @user.map_id
     
     Pusher[message.map_id].trigger_async('message', {:entityID => @user.id,

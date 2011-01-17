@@ -7,6 +7,7 @@ class Message < CouchRest::ExtendedDocument
   view_by :map_id
   property :x_location, :default => 128
   property :y_location, :default => 128
+  property :distance, :default => 128
 
   
   property :content
