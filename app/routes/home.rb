@@ -22,6 +22,7 @@ class Main
       Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id, :name => @user.name, :type => "destroy"}.to_json)
       @user.map_id = @map.id
       @user.save
+      $cached_users[@user.id] = nil
       loc = @user.location
       Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id,
                                                   :type => "create",
@@ -60,6 +61,7 @@ class Main
   get "/logout" do
     @user.map_id = nil
     @user.save
+    $cached_users[@user.id] = nil
     response.set_cookie("user", {
       :path => "/",
       :expires => Time.now + 2**20,
@@ -141,6 +143,7 @@ class Main
     map_id = @user.map_id
     @user.map_id = nil
     @user.save
+    $cached_users[@user.id] = nil
     Pusher[map_id].trigger_async('edituser', {:user_id => @user.id, :name => @user.name, :type => "destroy"}.to_json)
     return 200
   end
@@ -171,6 +174,7 @@ class Main
     if @user.map_id.nil?
       @user.map_id = params[:map] 
       @user.save
+      $cached_users[@user.id] = nil
       Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id,
                                                   :type => "create",
                                                   :name => @user.name,
