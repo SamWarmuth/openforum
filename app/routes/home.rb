@@ -119,6 +119,17 @@ class Main
     return 403 unless logged_in?
     return 400 if params[:tele_id].empty?
     teleporter = Teleporter.get(params[:tele_id])
+    if @user.location_ids[teleporter.destination_id].nil?
+      location = Location.new
+      location.save
+      @user.location_ids[teleporter.destination_id] = location.id
+    else
+      location = Location.get(@user.location_ids[teleporter.destination_id])
+    end
+    
+    location.x, location.y = teleporter.destination_location
+    location.save
+    
     return 404 if teleporter.nil?
     return 404 if teleporter.destination_id.nil?
     return "/m/#{teleporter.destination_id}"
