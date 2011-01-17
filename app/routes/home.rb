@@ -144,11 +144,7 @@ class Main
   get "/leave-room" do
     return 403 unless logged_in?
     return 202 if @user.map_id != params[:map_id]
-    map_id = @user.map_id
-    @user.map_id = nil
-    @user.save
-    $cached_users[@user.id] = nil
-    Pusher[map_id].trigger_async('edituser', {:user_id => @user.id, :name => @user.name, :type => "destroy"}.to_json)
+    @user.leave_room
     return 200
   end
   
@@ -159,34 +155,7 @@ class Main
     x = params[:x].to_i - params[:x].to_i % 16
     y = params[:y].to_i - params[:y].to_i % 16
     
-    Pusher[@user.map_id].trigger_async('locationupdate', {:entityID => @user.id,
-                                                          :xLocation => x, 
-                                                          :yLocation => y,
-                                                          :date => params[:date]}.to_json)
-                                                          
-    
-    if params[:store] == "true"
-      location = @user.location
-      location.x = x
-      location.y = y
-      location.save
-      $locations[@user.id][@user.map_id] = nil
-    end
-    
-    
-    #this is a hack. If the user isn't actually in a map (probably due to the refresh bug), it adds them now.
-    if @user.map_id.nil?
-      @user.map_id = params[:map] 
-      @user.save
-      $cached_users[@user.id] = nil
-      Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id,
-                                                  :type => "create",
-                                                  :name => @user.name,
-                                                  :x => x,
-                                                  :y => y,
-                                                  :color => @user.color}.to_json)
-    end
-    
+    @user.move(params[:map], x, y, params[:date], params[:store])
     return 200
   end
   

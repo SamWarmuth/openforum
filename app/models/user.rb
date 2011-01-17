@@ -44,4 +44,43 @@ class User < CouchRest::ExtendedDocument
     $locations[self.id][self.map_id]
   end
   
+  def move(map_id, x, y, date, store = false)
+    Pusher[self.map_id].trigger_async('locationupdate', {:entityID => self.id,
+                                                          :xLocation => x, 
+                                                          :yLocation => y,
+                                                          :date => date}.to_json)
+                                                          
+    
+    if store == "true"
+      location = self.location
+      location.x = x
+      location.y = y
+      location.save
+      $locations[self.id][self.map_id] = nil
+    end
+    
+    
+    #this is a hack. If the user isn't actually in a map (probably due to the refresh bug), it adds them now.
+    if self.map_id.nil?
+      self.map_id = map_id 
+      self.save
+      $cached_users[self.id] = nil
+      Pusher[self.map_id].trigger_async('edituser', {:user_id => self.id,
+                                                  :type => "create",
+                                                  :name => self.name,
+                                                  :x => x,
+                                                  :y => y,
+                                                  :color => self.color}.to_json)
+    end
+    
+  end
+  
+  def leave_room
+    map_id = self.map_id
+    self.map_id = nil
+    self.save
+    $cached_users[self.id] = nil
+    Pusher[map_id].trigger_async('edituser', {:user_id => self.id, :name => self.name, :type => "destroy"}.to_json)
+  end
+  
 end
