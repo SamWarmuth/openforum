@@ -15,27 +15,26 @@ class Main
       set_cookies
     end
     
-    @map = Map.get(params[:map_id])
-    redirect "/404" if @map.nil?
+    map = Map.get(params[:map_id])
+    redirect "/404" if map.nil?
+    load_map(map)
     
-    if @user.map_id != @map.id
-      Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id, :name => @user.name, :type => "destroy"}.to_json)
-      @user.map_id = @map.id
+    haml :index
+  end
+  
+  get "/n/:map_permalink" do
+    if logged_in? == false
+      @new_user = true
+      @user = User.new
+      @user.name = generate_roman_name
       @user.save
-      $cached_users[@user.id] = nil
-      loc = @user.location
-      Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id,
-                                                  :type => "create",
-                                                  :name => @user.name,
-                                                  :x => loc.x,
-                                                  :y => loc.y,
-                                                  :color => @user.color}.to_json)
+      set_cookies
     end
-    @users = @map.users
-    @npcs = @map.npcs
-    @notes = @map.notes
-    @teleporters = @map.teleporters
-    @walls = @map.walls
+    
+    map = Map.by_permalink(:key => params[:map_permalink]).first
+    redirect "/404" if map.nil?
+    load_map(map)
+    
     haml :index
   end
   
@@ -99,8 +98,9 @@ class Main
   end
   
   post "/change-name" do
+    puts params.inspect
     return 403 unless logged_in?
-    return 400 if params[:name].empty?
+    return 400 if params[:name].nil? || params[:name].empty?
     @user.name = params[:name]
     @user.save
     #push name change to users
@@ -134,7 +134,11 @@ class Main
     
     return 404 if teleporter.nil?
     return 404 if teleporter.destination_id.nil?
-    return "/m/#{teleporter.destination_id}"
+    destination = Map.get(teleporter.destination_id)
+    return 404 if destination.nil?
+    
+    
+    return "/n/#{destination.permalink}"
   end
   
   get "/leave-room" do

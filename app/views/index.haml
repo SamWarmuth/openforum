@@ -43,14 +43,10 @@
   .map-view
     .logo
       %img{:style => "width: 184px; height: 27px;", :src => "/images/logo.png"}
-    -if @user.nil?
-      .new-user-form
-        Hi there, you're new!
-    -else
-      -location = @user.location
-      .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
-        .reach-ring{:style => "left: -120px; top: -120px;"}
-        
+    -location = @user.location
+    .entity.you{:style => "left: #{location.x}px; top: #{location.y}px; background: #{@user.color}", :id => @user.id}
+      .reach-ring{:style => "left: -120px; top: -120px;"}
+      
     -@notes.each do |note|
       -location = note.location
       .note{:style => "left: #{location.x}px; top: #{location.y}px;", :id => note.id}= note.message
@@ -81,7 +77,19 @@
   %input#chat-input{:type => "text"}
   #dragdealer
   .settings
-    Sorry, no settings yet. Working on it. Eventually this will allow you to change profile, color, etc.
+    %p
+      %label Name
+      %input.name-field{:type => "text", :value => @user.name}
+    .set-name.awesome.green.medium{:style => "width: 158px;"} Change Name
+    -if @user.email.nil?
+      %p
+        %br
+        %label Email
+        %input{:type => "text"}
+      %p
+        %label Pass
+        %input{:type => "password"}
+    %p Color, profile, pic.
     .settings-tab
   
 :javascript

@@ -140,7 +140,7 @@ $(document).ready(function(){
     if ($(".settings").position().top < -10){
       $(".settings").animate({top: 0}, 500);
     }else{
-      $(".settings").animate({top: -150}, 500);
+      $(".settings").animate({top: -365}, 500);
     }
     
   });
@@ -229,6 +229,9 @@ $(document).ready(function(){
     $(".new-user-signup").hide();
     $(".new-user-signup-overlay").hide();
   });
+  $(".set-name").click(function(){
+    changeName($(".name-field").val());
+  });
   $(".permanent").click(function(){
     var name = $(".new-name").val();
     var email = $(".email").val();
@@ -254,9 +257,9 @@ function teleport(teleporterID){
   });
 }
 
-function changeName(name){
-  userName = name;
-  $.post("/change-name", {name: name});
+function changeName(newName){
+  UserName = newName;
+  $.post("/change-name", {name: newName});
   return true;
 }
 
