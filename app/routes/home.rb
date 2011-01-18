@@ -58,6 +58,7 @@ class Main
   end
   
   get "/logout" do
+    redirect "/login" unless logged_in?
     @user.map_id = nil
     @user.save
     $cached_users[@user.id] = nil
