@@ -80,16 +80,18 @@
     %p
       %label Name
       %input.name-field{:type => "text", :value => @user.name}
-    .set-name.awesome.green.medium{:style => "width: 158px;"} Change Name
+    .set-name.awesome.green.medium{:style => "width: 158px; text-align: center"} Change Name
     -if @user.email.nil?
       %p
         %br
         %label Email
-        %input{:type => "text"}
+        %input.email-field{:type => "text"}
       %p
         %label Pass
-        %input{:type => "password"}
-    %p Color, profile, pic.
+        %input.pass-field{:type => "password"}
+      .set-account.awesome.green.medium{:style => "width: 158px; text-align: center"} Create Account
+      
+    %p More coming soon (color, profile, picture)
     .settings-tab
   
 :javascript

@@ -112,7 +112,7 @@ class Main
     return false unless @user.password_hash.nil?
     return 400 if (params[:name].empty? || params[:email].empty? || params[:password].empty?)
     @user.name = params[:name]
-    @user.email = params[:email]
+    @user.email = params[:email].downcase
     @user.set_password(params[:password])
     @user.save
     #push name change to users

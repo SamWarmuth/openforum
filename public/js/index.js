@@ -241,6 +241,12 @@ $(document).ready(function(){
     $(".new-user-signup").hide();
     $(".new-user-signup-overlay").hide();
   });
+  $(".set-account").click(function(){
+    var name = $(".name-field").val();
+    var email = $(".email-field").val();
+    var password = $(".pass-field").val();
+    setAccountDetails(name, email, password);
+  });
   
   $(window).unload( function () { 
     $.ajax({url:"/leave-room", data: {map_id: mapID}, async:false})
