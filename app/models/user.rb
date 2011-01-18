@@ -75,12 +75,21 @@ class User < CouchRest::ExtendedDocument
     
   end
   
-  def leave_room
+  def switch_room(new_map_id = nil)
     map_id = self.map_id
-    self.map_id = nil
+    self.map_id = new_map_id
     self.save
     $cached_users[self.id] = nil
     Pusher[map_id].trigger_async('edituser', {:user_id => self.id, :name => self.name, :type => "destroy"}.to_json)
+    unless new_map_id.nil?
+      loc = self.location
+      Pusher[self.map_id].trigger_async('edituser', {:user_id => self.id,
+                                                  :type => "create",
+                                                  :name => self.name,
+                                                  :x => loc.x,
+                                                  :y => loc.y,
+                                                  :color => self.color}.to_json)
+    end
   end
   
 end

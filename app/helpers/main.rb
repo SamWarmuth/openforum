@@ -18,17 +18,7 @@ class Main
     def load_map(map)
       @map = map
       if @user.map_id != @map.id
-        Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id, :name => @user.name, :type => "destroy"}.to_json)
-        @user.map_id = @map.id
-        @user.save
-        $cached_users[@user.id] = nil
-        loc = @user.location
-        Pusher[@user.map_id].trigger_async('edituser', {:user_id => @user.id,
-                                                    :type => "create",
-                                                    :name => @user.name,
-                                                    :x => loc.x,
-                                                    :y => loc.y,
-                                                    :color => @user.color}.to_json)
+        @user.switch_room(@map.id)
       end
       @users = @map.users
       @npcs = @map.npcs

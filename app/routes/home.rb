@@ -145,7 +145,7 @@ class Main
   get "/leave-room" do
     return 403 unless logged_in?
     return 202 if @user.map_id != params[:map_id]
-    @user.leave_room
+    @user.switch_room(nil)
     return 200
   end
   
