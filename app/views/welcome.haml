@@ -12,6 +12,8 @@
   .paper
     -if @user
       .username{:style => "position: absolute; top: 10px; right: 10px;color: #888; font-size: 0.8em;"} You're logged in as #{@user.name}
+    -else
+      %a{:style => "display: block; position: absolute; top: 10px; right: 10px;color: #888; font-size: 0.8em;", :href => "login"} Log In
     %img{:style => "display: block; margin: 0 auto 30px auto; width: 368px; height: 54px;", :src => "/images/logo.png"}
     Open forum is a work in progess.
     .recent-maps
