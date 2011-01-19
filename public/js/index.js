@@ -137,7 +137,7 @@ $(document).ready(function(){
   setObstructions();
   
   displayWelcome();
-  if (window.grue) setInterval("grue()", 3000);
+  if (window.grueExists) setInterval("grue()", 3000);
   
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
@@ -442,7 +442,8 @@ function grue(){
   }).length == 0)
   
   if (inTheDark && warned && Math.random() > 0.80){
-    window.location = "/grue"
+    var loc = window.location
+    window.location.replace(loc.protocol +"//" +loc.host+"/grue");
   }
   if (inTheDark && !warned){
     addStatus("It is pitch black. You are likely to be eaten by a grue.");

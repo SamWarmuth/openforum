@@ -1,7 +1,3 @@
-
-.hidey-hole
-  -@walls.each do |wall|
-    .hide{:style => "display: none"}= wall.id
 .loading-mask
   .loading-box
     Loading
@@ -113,6 +109,6 @@
   window.userID = '#{@user.id}';
   window.userName = '#{@user.name}';
   window.welcomeMessage = '#{@map.welcome_message}';
-  window.grue = #{@map.grue == true};
+  window.grueExists = #{@map.grue == true};
 #user-power{:style => "display: none; background-color: ##{(9 - @user.power).to_s*3}"}
 %script{:src => "/js/index.js", :type => "text/javascript"}
