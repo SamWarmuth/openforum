@@ -137,7 +137,7 @@ $(document).ready(function(){
   setObstructions();
   
   displayWelcome();
-  if (MapName == "The Cave") setInterval("grue()", 2000);
+  if (window.grue) setInterval("grue()", 3000);
   
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
@@ -434,10 +434,15 @@ function displayWelcome(){
   }
 }
 
+var warned = false;
 function grue(){
   var pos = $(".you").position();
-  
-  if ($(".torch").filter(function(){
+  var inTheDark = ($(".torch").filter(function(){
     return ((Math.abs($(this).position().top - pos.top) < 128) && (Math.abs($(this).position().left - pos.left) < 128))
-  }).length == 0 && Math.random() > 0.80) window.location = "/grue"
+  }).length == 0)
+  
+  if (inTheDark && warned && Math.random() > 0.80){
+    window.location = "/grue"
+  }
+  if (inTheDark && !warned) addStatus("It is pitch black. You are likely to be eaten by a grue.")
 }

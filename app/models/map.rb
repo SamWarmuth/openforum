@@ -13,6 +13,8 @@ class Map < CouchRest::ExtendedDocument
   
   property :welcome_message
   
+  property :grue, :default => false
+  
   
   def walls
     $walls[self.id] ||= Wall.by_map_id(:key => self.id)

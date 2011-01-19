@@ -112,6 +112,7 @@
   window.mapName = '#{@map.name}';
   window.userID = '#{@user.id}';
   window.userName = '#{@user.name}';
-  window.welcomeMessage = '#{@map.welcome_message}'
+  window.welcomeMessage = '#{@map.welcome_message}';
+  window.grue = #{@map.grue == true};
 #user-power{:style => "display: none; background-color: ##{(9 - @user.power).to_s*3}"}
 %script{:src => "/js/index.js", :type => "text/javascript"}
