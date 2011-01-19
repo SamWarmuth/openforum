@@ -40,11 +40,10 @@
       .pixel{:style => "left: #{wall.x/24}px; top: #{wall.y/24}px; background-color: ##{(9 - wall.power).to_s*3};", :id => "p" + wall.id}
     -@torches.each do |torch|
       -location = torch.location
-      -light = torch.brightness / 12
-      -a = light/2
-      -b = light/2
-      -c = light/32
-      .glow{:style => "width: #{light*2}px; height: #{light*2}px; border-radius: #{light/2}px; left: #{location.x/24 - light/2}px; top: -#{location.y/24 - light/2}px; background: -webkit-gradient(radial, #{a} #{a}, #{b}, #{a} #{a}, #{c}, from(rgba(206,88,59,0.0)), to(#E7E084));"}
+      -light = torch.brightness/24
+      -center = light
+      -radius = light
+      .glow{:style => "width: #{light*4}px; height: #{light*4}px; border-radius: #{light}px; left: #{location.x/24 - light}px; top: #{location.y/24 - light}px; background: -webkit-gradient(radial, #{center} #{center}, #{radius}, #{center} #{center}, 0, from(rgba(206,88,59,0.0)), to(#E7E084));"}
     .location-box
     
   .map-view{:style => "background-image: url('#{@map.background_tile}')"}
@@ -78,11 +77,10 @@
     -@torches.each do |torch|
       -location = torch.location
       .torch{:id => torch.id, :style => "left: #{location.x}px; top: #{location.y}px; background-image: url(#{torch.image_url})'"}
-        -light = torch.brightness * 2
-        -a = light/2 + 4
-        -b = light/2
-        -c = 4
-      .glow{:style => "width: #{light*2}px; height: #{light*2}px; border-radius: #{light/2}px; left: #{location.x - light/2 + 8}px; top: -#{location.y - light/2 + 8}px; background: -webkit-gradient(radial, #{a} #{a}, #{b}, #{a} #{a}, #{c}, from(rgba(206,88,59,0.0)), to(#E7E084));"}
+        -light = torch.brightness
+        -center = light + 8
+        -radius = light
+      .glow{:style => "width: #{light*4}px; height: #{light*4}px; border-radius: #{light}px; left: #{location.x - light}px; top: #{location.y - light}px; background: -webkit-gradient(radial, #{center} #{center}, #{radius}, #{center} #{center}, 0, from(rgba(206,88,59,0.0)), to(#E7E084));"}
   
 .chat
   #tabs-1.message-list
