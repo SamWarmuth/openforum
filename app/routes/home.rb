@@ -226,4 +226,12 @@ class Main
     return wall.id
   end
   
+  
+  get "/grue" do
+    haml :grue, :layout => false
+  end
+  
+  get "/404" do
+    haml :'404', :layout => false
+  end
 end

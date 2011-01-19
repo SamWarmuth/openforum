@@ -137,6 +137,7 @@ $(document).ready(function(){
   setObstructions();
   
   displayWelcome();
+  if (MapName == "The Cave") setInterval("grue()", 7000);
   
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
@@ -431,5 +432,12 @@ function displayWelcome(){
   if (welcomeMessage != ""){
     addStatus(welcomeMessage);
   }
+}
+
+function grue(){
+  var pos = $(".you").position();
   
+  if ($(".torch").filter(function(){
+    return ((Math.abs($(this).position().top - pos.top) < 128) || (Math.abs($(this).position().left - pos.left) < 128))
+  }).length == 0) window.location = "/grue"
 }
