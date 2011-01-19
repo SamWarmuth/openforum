@@ -19,13 +19,13 @@ class Main
       @map = map
       if @user.map_id != @map.id
         @user.switch_room(@map.id)
-        if (params[:x] && params[:y])
-          loc = @user.location
-          loc.x = params[:x].to_i  - params[:x].to_i % 16
-          loc.y = params[:y].to_i  - params[:y].to_i % 16
-          loc.save
-          $locations[@user.id][@user.map_id] = nil
-        end
+      end
+      if (params[:x] && params[:y])
+        loc = @user.location
+        loc.x = params[:x].to_i - params[:x].to_i % 16
+        loc.y = params[:y].to_i - params[:y].to_i % 16
+        loc.save
+        $locations[@user.id][@user.map_id] = nil
       end
       @users = @map.users
       @npcs = @map.npcs
