@@ -8,6 +8,8 @@ var ZKEY = 122;
 var TKEY = 84;
 
 var MapID = window.mapID;
+var MapName = window.mapName;
+
 var UserID = window.userID;
 var UserPower = window.userPower;
 var UserName = window.userName;
@@ -134,6 +136,8 @@ $(document).ready(function(){
   
   setObstructions();
   
+  displayWelcome();
+  
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
 
@@ -175,7 +179,7 @@ $(document).ready(function(){
       humanMsg.removeMsg();
       var pos = $(".you").position();
       obstructingObjects[pos.left/16][pos.top/16] = null;
-      $(".you").stop(true, true);
+      $(".you").stop(true, true).css('opacity', 1.0);
       if (e.keyCode == LARROW){
         if (pos.left - 16 < 0) return false;
         if (!obstructed(pos.left-16, pos.top)) $('.you').css('left', pos.left-16);
@@ -420,4 +424,12 @@ function rgb2hex(rgb){
 function rgb2power(rgb){
  hex = rgb2hex(rgb);
  return parseInt(hex, 16);
+}
+
+function displayWelcome(){
+  addStatus("You have entered <b>"+MapName + "</b>.");
+  if (welcomeMessage != ""){
+    addStatus(welcomeMessage);
+  }
+  
 }

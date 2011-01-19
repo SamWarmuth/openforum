@@ -132,6 +132,7 @@ class Main
     
     location.x, location.y = teleporter.destination_location
     location.save
+    $locations[@user.id][@user.map_id] = nil
     
     return 404 if teleporter.nil?
     return 404 if teleporter.destination_id.nil?
@@ -213,7 +214,6 @@ class Main
       $walls[wall.map_id].delete_if{|w| w.id == wall_id} unless $walls[wall.map_id].nil?
       
     end
-    
     
     Pusher[@user.map_id].trigger_async('editwall', {:creator_id => @user.id,
                                                 :type => params[:type],

@@ -8,6 +8,12 @@ class Map < CouchRest::ExtendedDocument
   property :date, :default => Proc.new{Time.now.to_i}
   property :spawn_points, :default => [[128,128]], :cast_as => ['Array']
   
+  property :background_tile, :default => '/images/grid.png'
+  property :birds_eye_background, :default => '#FFF'
+  
+  property :welcome_message
+  
+  
   def walls
     $walls[self.id] ||= Wall.by_map_id(:key => self.id)
   end
@@ -22,6 +28,9 @@ class Map < CouchRest::ExtendedDocument
   end
   def teleporters
     Teleporter.by_map_id(:key => self.id)
+  end
+  def torches
+    Torch.by_map_id(:key => self.id)
   end
   
   def generate_permalink

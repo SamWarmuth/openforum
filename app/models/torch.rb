@@ -1,19 +1,17 @@
-class Teleporter < CouchRest::ExtendedDocument
+class Torch < CouchRest::ExtendedDocument
   use_database COUCHDB_SERVER
   
   property :name
-  property :disabled, :default => false
-  
-  property :date, :default => Proc.new{Time.now.to_i}
-  property :image_url, :default => "/images/teleport.png"
+  property :brightness, :default => 128
+  property :image_url, :default => "/images/torch.png"
   
   property :map_id
   view_by :map_id
   
+  property :disabled, :default => false
+  property :date, :default => Proc.new{Time.now.to_i}
+    
   property :location_id, :default => Proc.new{loc = Location.new; loc.save; loc.id}
-  
-  property :destination_id
-  property :destination_location, :default => [128, 128]
   
   
   def location(reset = false)
