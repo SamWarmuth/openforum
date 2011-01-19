@@ -444,5 +444,8 @@ function grue(){
   if (inTheDark && warned && Math.random() > 0.80){
     window.location = "/grue"
   }
-  if (inTheDark && !warned) addStatus("It is pitch black. You are likely to be eaten by a grue.")
+  if (inTheDark && !warned){
+    addStatus("It is pitch black. You are likely to be eaten by a grue.");
+    warned = true;
+  }
 }
