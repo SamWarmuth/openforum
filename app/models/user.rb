@@ -35,10 +35,10 @@ class User < CouchRest::ExtendedDocument
     $locations[self.id][self.map_id] ||= Location.get(self.location_ids[self.map_id])
     if $locations[self.id][self.map_id].nil?
       loc = Location.new
+      loc.x, loc.y = Map.get(self.map_id).spawn_points.first
       loc.save
       self.location_ids[self.map_id] = loc.id
       self.save
-      puts "reset location for this map/user"
       $locations[self.id][self.map_id] = loc
     end
     $locations[self.id][self.map_id]
@@ -59,7 +59,6 @@ class User < CouchRest::ExtendedDocument
       $locations[self.id][self.map_id] = nil
     end
     
-    
     #this is a hack. If the user isn't actually in a map (probably due to the refresh bug), it adds them now.
     if self.map_id.nil?
       self.map_id = map_id 
@@ -72,7 +71,6 @@ class User < CouchRest::ExtendedDocument
                                                   :y => y,
                                                   :color => self.color}.to_json)
     end
-    
   end
   
   def switch_room(new_map_id = nil)

@@ -33,7 +33,6 @@ class Main
       @teleporters = @map.teleporters
       @walls = @map.walls
       @torches = @map.torches
-      
     end
     
     def set_cookies
