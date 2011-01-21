@@ -85,7 +85,7 @@
       .red-bar.handle Medium
   %input#chat-input{:type => "text"}
   #dragdealer
-  .settings
+  .tab-content.settings
     %p
       %label Name
       %input.name-field{:type => "text", :value => @user.name}
@@ -101,7 +101,13 @@
       .set-account.awesome.green.medium{:style => "width: 158px; text-align: center"} Create Account
       
     %p More coming soon (color, profile, picture)
-    .settings-tab
+    .tab{:id => "settings"}
+  .tab-content.users
+    Users in #{@map.name}
+    %ul.user-list{:style => "list-style: none; padding: 0; overflow: auto; height: 300px;"}
+      -@users.each do |user|
+        %li{:style => "color: #{user.color}", :id => "l"+user.id}= user.name
+    .tab{:id => "users"}
   
 :javascript
   window.mapID = '#{@user.map_id}';

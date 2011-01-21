@@ -80,6 +80,9 @@ pusher.bind('edituser', function(data){
     
     var pixel = $("<div class='pixel' style='top: " + data.y/24 + "px; left: " + data.x/24 + "px; background-color: " + data.color + ";'></div>").attr("id", "p" + data.user_id);
     $(".birds-eye").append(pixel);
+    
+    var listname = $("<li id='l" + data.user_id + "' style='color: "+data.color+";'>" + data.name + "</li>");
+    $(".user-list").append(listname);
     obstructingObjects[data.x/16][data.y/16] = true;
     addStatus("<b>"+data.name + "</b> has entered this forum.");
   } else {
@@ -91,6 +94,7 @@ pusher.bind('edituser', function(data){
       entity.remove();
     });
     $("#p"+data.user_id).remove();
+    $("#l"+data.user_id).remove();
     addStatus("<b>"+data.name + "</b> has left this forum.");
     
   }
@@ -142,11 +146,14 @@ $(document).ready(function(){
   window.setInterval("glow()", 750)
   $(".message-list").stop(true,true).animate({ scrollTop: $(".message-list").attr("scrollHeight") }, 0);
 
-  $(".settings-tab").click(function(){
-    if ($(".settings").position().top < -10){
-      $(".settings").animate({top: 0}, 500);
+  $(".tab").click(function(){
+    var tabContent = $("." + $(this).attr("id"));
+    if (tabContent.position().top < -10){
+      $(".tab-content").css("z-index", 500);
+      tabContent.css("z-index", 501);
+      tabContent.animate({top: 0}, 500);
     }else{
-      $(".settings").animate({top: -365}, 500);
+      tabContent.animate({top: -365}, 500);
     }
     
   });
