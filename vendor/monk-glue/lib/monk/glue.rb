@@ -1,5 +1,5 @@
 # This file contains the bootstraping code for a Monk application.
-RACK_ENV = ENV["RACK_ENV"] ||= "development" unless defined? RACK_ENV
+RACK_ENV = ENV["RACK_ENV"] ||= "production" unless defined? RACK_ENV
 ROOT_DIR = $0 unless defined? ROOT_DIR
 
 # Helper method for file references.
