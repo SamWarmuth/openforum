@@ -16,6 +16,7 @@ require "json"
 require "pusher"
 require "em-http"
 require "rufus/scheduler"
+require "secrets"
 
 
 class Main < Monk::Glue
@@ -30,9 +31,7 @@ $cached_users = {}
 $locations = {}
 $walls = {}
 # Pusher Creds
-Pusher.app_id = '3520'
-Pusher.key = '834b3ca0e7e453c73863'
-Pusher.secret = '479ee215c70a2fe36965'
+
 
 # Load all application files.
 Dir[root_path("app/**/*.rb")].each do |file|
